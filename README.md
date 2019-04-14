@@ -23,10 +23,10 @@
 
 ### 2. MySQL Databse
 On Ubuntu:
+
 | Action | Command |
 | --- | --- |
 | Install MySQL | `apt install mysql-server` |
-| Access MySQL  as admin | `mysql -u root -p` (default password: _root_)|
 
 After this steps, we will need to configure our REST API to access the new database we just created. For doing so, in `settings.py`file of the REST API Django Project we need to add the following code:
 ``` python
