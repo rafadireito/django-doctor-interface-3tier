@@ -172,25 +172,29 @@ EMAIL_USE_TLS = <True|False>
 
 # CLIENT'S WEB FEATURES
 
-**/reload_database** : Clean and put the database default data
-**/login** : Sign in to platform
+| Url  | Action |
+| --- | --- |
+| `<Client_URL>/reload_database` | Clean and put the database default data |
+| `<Client_URL>/login` | Sign in to platform |
 
 #### All the following features require a previous login:
 
-**/general_statistics** : General statistics about Arcade Battle
-**/about** : Edit profile and / or change password
-**/logout** : Log out of platform
-**/all_admins** : Observe platform administrators. The owner and administrators can remove users from this list.
-**/admin_statistics?email=** : Observe info from a particular administrator.
-**/add_admin** : Add a new administrator to the platform.
-**/all_doctors** : Observe platform doctors. The owner and administrators can remove users from this list.
-**/doctor_statistics?email=** : Observe info from a particular doctor.
-**/add_doctor** : Add a new doctor to the platform.
-**/all_patients** : Observe platform patients. The owner, administrators and doctors can remove users from this list.
-**/patient_statistics?email=** : Observe info from a particular patient, update notes, check gestures and their statistics, add/remove gestures to the patient and observer statistics from the patient.
-**/add_patient** : Add a new patient to the platform.
-**/all_games** : Observe all games on the platform and watch game preview videos.
-**/add_game** : Add a new game to the platform.
+| Url  | Action |
+| --- | --- |
+| `<Client_URL>/general_statistics` | General statistics about Arcade Battle |
+| `<Client_URL>/about` | Edit profile and/or change password |
+| `<Client_URL>/logout` |  Log out of platform |
+| `<Client_URL>/all_admins` | Observe platform administrators. The owner and administrators can remove users from this list |
+| `<Client_URL>/admin_statistics?email=` |  Observe info from a particular administrator |
+| `<Client_URL>/add_admin` | Add a new administrator to the platform |
+| `<Client_URL>/all_doctors` | Observe platform doctors. The owner and administrators can remove users from this list |
+| `<Client_URL>/doctor_statistics?email= ` |  Observe info from a particular doctor |
+| `<Client_URL>/add_doctor` |  Add a new doctor to the platform |
+| `<Client_URL>/all_patients` |  Observe platform patients. The owner, administrators and doctors can remove users from this list |
+| `<Client_URL>/patient_statistics?email=` |  Observe info from a particular patient, update notes, check gestures and their statistics, add/remove gestures to the patient and observer statistics from the patient |
+| `<Client_URL>/add_patient` |  Add a new patient to the platform |
+| `<Client_URL>/all_games` |  Observe all games on the platform and watch game preview videos |
+| `<Client_URL>/add_game` |  Add a new game to the platform |
 
 # DEFAULT ACCESSES
 After `<API_url>/reload_database`
