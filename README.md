@@ -27,12 +27,6 @@ On Ubuntu:
 | --- | --- |
 | Install MySQL | `apt install mysql-server` |
 | Access MySQL  as admin | `mysql -u root -p` (default password: _root_)|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
-| Create a new user and set it's password | `CREATE USER 'arcadebattle'@'localhost' IDENTIFIED BY 'arcadebattle';`|
-| Create the database | `CREATE DATABASE arcadebattle_db;`|
-| Grant priviliges to the new user | `GRANT ALL PRIVILEGES ON arcadebattle_db. * TO 'arcadebattle'@'localhost’;`|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
-| Find out the port where MySQL is running | `SHOW VARIABLES WHERE Variable_name = 'port';`|
 
 After this steps, we will need to configure our REST API to access the new database we just created. For doing so, in `settings.py`file of the REST API Django Project we need to add the following code:
 ``` python
