@@ -19,7 +19,7 @@
 | Action | Command |
 | --- | --- |
 | Get inside of the venv directory | `. venv/bin/activate` |
-| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` ;  `pip install mysqlclient`|
+| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` ;  `pip3 install mysqlclient`|
 
 ### 2. MySQL Databse
 On Ubuntu:
@@ -27,12 +27,10 @@ On Ubuntu:
 | Action | Command |
 | --- | --- |
 | Install MySQL | `apt install mysql-server` |
-| Access MySQL  as admin | `mysql -u root -p` (default password: _root_)|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
-| Create a new user and set it's password | `CREATE USER 'arcadebattle'@'localhost' IDENTIFIED BY 'arcadebattle';`|
+| Access MySQL  as admin | `sudo mysql -u root -p` (default password: _root_)|
 | Create the database | `CREATE DATABASE arcadebattle_db;`|
-| Grant priviliges to the new user | `GRANT ALL PRIVILEGES ON arcadebattle_db. * TO 'arcadebattle'@'localhost’;`|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
+| Create a new user and set it's password | `CREATE USER 'arcadebattle'@'localhost' IDENTIFIED BY 'arcadebattle';`|
+| Grant priviliges to the new user | `GRANT ALL PRIVILEGES ON arcadebattle_db. * TO 'arcadebattle'@'localhost';`|
 | Find out the port where MySQL is running | `SHOW VARIABLES WHERE Variable_name = 'port';`|
 
 After this steps, we will need to configure our REST API to access the new database we just created. For doing so, in `settings.py`file of the REST API Django Project we need to add the following code:
@@ -96,8 +94,8 @@ result = requests.get(API_URL + "all_doctors", headers={'Authorization': 'Token 
 ### 4. Testing
 
 First of all, deploys the Django Projects:
-1. Deploy the REST API (`pyhton manage.py runserver`)
-2. Deploy the Client's Project (`pyhton manage.py runserver`)
+1. Deploy the REST API (`pyhton3 manage.py runserver`)
+2. Deploy the Client's Project (`pyhton3 manage.py runserver`)
 
 On [Postman](https://www.getpostman.com/):
 
