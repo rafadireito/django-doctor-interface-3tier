@@ -1,0 +1,277 @@
+{% extends "basic_layout.html" %}
+{% load staticfiles %}
+{% block content %}
+
+
+    <script type="text/javascript">
+        var userStats = null;
+        var topPlayedGames = null;
+        var gestureStats = null;
+        window.onload = function(){
+
+            var ctx = document.getElementById("topPlayedGames").getContext("2d");
+
+            if(ctx) {
+                ctx.height = 150;
+                topPlayedGames = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                      labels: [],
+                      datasets: [
+                        {
+                          label: "Games",
+                          data: [],
+                          borderColor: "rgba(66, 66, 244, 0.9)",
+                          borderWidth: "0",
+                          backgroundColor: "rgba(66, 66, 244, 0.5)"
+                        }
+                      ]
+                    },
+                    options: {
+                      legend: {
+                        position: 'top',
+                        labels: {
+                          fontFamily: 'Poppins'
+                        }
+
+                      },
+                      scales: {
+                        xAxes: [{
+                          ticks: {
+                            fontFamily: "Poppins"
+
+                          }
+                        }],
+                        yAxes: [{
+                          ticks: {
+                            beginAtZero: true,
+                            fontFamily: "Poppins"
+                          }
+                        }]
+                      }
+                    }
+                  });
+                }
+
+            var ctx2 = document.getElementById("userStats").getContext("2d");
+
+            if(ctx2) {
+                ctx2.height = 150;
+                userStats = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                      labels: [],
+                      datasets: [
+                        {
+                          label: "Users",
+                          data: [],
+                          borderColor: "rgba(255, 187, 0, 0.9)",
+                          borderWidth: "0",
+                          backgroundColor: "rgba(255, 187, 0, 0.5)"
+                        }
+                      ]
+                    },
+                    options: {
+                      legend: {
+                        position: 'top',
+                        labels: {
+                          fontFamily: 'Poppins'
+                        }
+
+                      },
+                      scales: {
+                        xAxes: [{
+                          ticks: {
+                            fontFamily: "Poppins"
+
+                          }
+                        }],
+                        yAxes: [{
+                          ticks: {
+                            beginAtZero: true,
+                            fontFamily: "Poppins"
+                          }
+                        }]
+                      }
+                    }
+                  });
+                }
+
+            var ctx3 = document.getElementById("gestureStats").getContext("2d");
+
+            if(ctx3) {
+                ctx3.height = 150;
+                gestureStats = new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                      labels: [],
+                      datasets: [
+                        {
+                          label: "Gesture",
+                          data: [],
+                          borderColor: "rgba(249, 0, 0, 0.9)",
+                          borderWidth: "0",
+                          backgroundColor: "rgba(249, 0, 0, 0.5)"
+                        }
+                      ]
+                    },
+                    options: {
+                      legend: {
+                        position: 'top',
+                        labels: {
+                          fontFamily: 'Poppins'
+                        }
+
+                      },
+                      scales: {
+                        xAxes: [{
+                          ticks: {
+                            fontFamily: "Poppins"
+
+                          }
+                        }],
+                        yAxes: [{
+                          ticks: {
+                            beginAtZero: true,
+                            fontFamily: "Poppins"
+                          }
+                        }]
+                      }
+                    }
+                  });
+                }
+
+            getStats();
+        }
+
+
+        function getStats(){
+            jsonData = JSON.parse(document.getElementById("groups_dict").innerHTML.replaceAll('\'', '\"'))
+
+            userStats.data.labels = [];
+            userStats.data.datasets[0].data=[];
+
+            Object.keys(jsonData).forEach(function(group) {
+                userStats.data.labels.push(group)
+                userStats.data.datasets[0].data.push(jsonData[group])
+            });
+
+            userStats.update();
+
+            jsonData = JSON.parse(document.getElementById("games_dict").innerHTML.replaceAll('\'', '\"'))
+
+            topPlayedGames.data.labels = [];
+            topPlayedGames.data.datasets[0].data=[];
+
+            Object.keys(jsonData).forEach(function(group) {
+                topPlayedGames.data.labels.push(group)
+                topPlayedGames.data.datasets[0].data.push(jsonData[group])
+            });
+
+            topPlayedGames.update();
+
+
+            jsonData = JSON.parse(document.getElementById("gestures_dict").innerHTML.replaceAll('\'', '\"'))
+
+            gestureStats.data.labels = [];
+            gestureStats.data.datasets[0].data=[];
+
+            Object.keys(jsonData).forEach(function(group) {
+                gestureStats.data.labels.push(group)
+                gestureStats.data.datasets[0].data.push(jsonData[group])
+            });
+
+            gestureStats.update();
+
+            jsonData = JSON.parse(document.getElementById("oldest_data").innerHTML.replaceAll('\'', '\"'))
+            document.getElementById("oldest_img").src += jsonData["Photo"]
+            document.getElementById("oldest_name").innerText = "Name: " + jsonData["Name"]
+            document.getElementById("oldest_age").innerText = "Age: " + jsonData["Age"]
+
+            jsonData = JSON.parse(document.getElementById("youngest_data").innerHTML.replaceAll('\'', '\"'))
+            document.getElementById("youngest_img").src += jsonData["Photo"]
+            document.getElementById("youngest_name").innerText = "Name: " + jsonData["Name"]
+            document.getElementById("youngest_age").innerText = "Age: " + jsonData["Age"]
+
+        }
+
+        String.prototype.replaceAll = function(search, replacement) {
+            var target = this;
+            return target.split(search).join(replacement);
+        };
+    </script>
+
+
+<div class="section__content section__content--p30">
+    <div class="container-fluid" style="margin-top: 2%">
+        <div class="row" style="margin-top: 2%">
+            <div class="col-lg-6">
+                <div class="au-card m-b-30">
+                    <div class="au-card-inner">
+                        <h3 class="title-2 m-b-40">Top Played Games</h3>
+                        <canvas id="topPlayedGames"></canvas>
+                        <div style="display:none" id="games_dict">{{ gamesPlayed }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="au-card m-b-30">
+                    <div class="au-card-inner">
+                        <h3 class="title-2 m-b-40">Users Statistics</h3>
+                        <canvas id="userStats"></canvas>
+                        <div style="display:none" id="groups_dict">{{ groups_count }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="au-card m-b-30">
+                    <div class="au-card-inner">
+                        <h3 class="title-2 m-b-40">Top Gestures Used</h3>
+                        <canvas id="gestureStats"></canvas>
+                        <div style="display:none" id="gestures_dict">{{ gesturesUsed }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="au-card m-b-30">
+                    <div class="au-card-inner">
+                        <h3 class="title-2 m-b-40">Oldest User</h3>
+                        <div class="card">
+                            <div class="card-body card-block">
+                                 <div class="mx-auto d-block">
+                                    <img id="oldest_img" class="rounded-circle mx-auto d-block" src="data:image/png;base64, {{ patient.person.photo_b64 }}">
+                                     <h5 id="oldest_name" class="text-sm-center mt-2 mb-1"></h5>
+                                     <h5 id="oldest_age" class="text-sm-center mt-2 mb-1"></h5>
+                                 </div>
+                            </div>
+                        </div>
+                        <div id="oldest_data" style="display: none;">{{ max_age }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="au-card m-b-30">
+                    <div class="au-card-inner">
+                        <h3 class="title-2 m-b-40">Youngest User</h3>
+                        <div class="card">
+                            <div class="card-body card-block">
+                                 <div class="mx-auto d-block">
+                                    <img id="youngest_img" class="rounded-circle mx-auto d-block" src="data:image/png;base64, {{ patient.person.photo_b64 }}">
+                                     <h5 id="youngest_name" class="text-sm-center mt-2 mb-1"></h5>
+                                     <h5 id="youngest_age" class="text-sm-center mt-2 mb-1"></h5>
+                                 </div>
+                            </div>
+                        </div>
+                        <div id="youngest_data" style="display: none;">{{ min_age }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
