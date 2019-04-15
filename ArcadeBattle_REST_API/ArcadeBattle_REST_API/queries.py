@@ -358,6 +358,45 @@ def get_patient_gestures(username):
     return gestures
 
 
+## NEW
+def game_max_score(g_name):
+    max_score = max([gp.points for gp in GamePlayed.objects.filter(game=Game.objects.get(name=g_name))])
+    return {"score": max_score}
+
+
+def gesture_max_score(gesture, username):
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+
+    gest = Gesture.objects.get(name=gesture, patient=pat)
+
+    games = [(gp.game.name, gp.points) for gp in GamePlayed.objects.filter(gesture=gest)]
+    g = sorted(games, key=lambda x: x[1], reverse=True)[0]
+
+    return {"score": g[1], "game":g[0]}
+
+
+def add_game_played(data):
+
+
+    username = data.get("username")
+    game_name = data.get("game_name")
+    gesture_name = data.get("gesture_name")
+    points = data.get("points")
+    avg_difficulty = data.get("avg_difficulty")
+    date = data.get("date")
+
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+
+    gest = Gesture.objects.get(patient=pat, name=gesture_name,)
+
+    game = Game.objects.get(name=game_name)
+    GamePlayed.objects.create(gesture=gest, game=game, points=points, average_difficulty=avg_difficulty, date=date).save()
+
+
 def send_email_pw(email):
 
     letters = string.ascii_lowercase

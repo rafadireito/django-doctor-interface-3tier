@@ -319,6 +319,37 @@ def update_notes(request):
 
     return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
 
+
+@csrf_exempt
+@api_view(["GET"])
+def get_game_max_score(request, game_name):
+
+    try:
+        max_score = queries.game_max_score(game_name)
+        return Response({"user_type": get_user_type(None, request), "data": max_score}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(["GET"])
+def get_gesture_max_score(request, username, gesture_name):
+    try:
+        data = queries.gesture_max_score(gesture_name, username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["POST"])
+def add_game_played(request):
+    try:
+        queries.add_game_played(request.data)
+        return Response(status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
 @csrf_exempt
 @api_view(["GET"])
 def reload_database(request):

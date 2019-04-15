@@ -42,6 +42,8 @@ urlpatterns = [
 
 
     url('^profile/(?P<username>.+)', views.get_profile),
+    url('^game_max_score/(?P<game_name>.+)', views.get_game_max_score),
+    url('^gesture_max_score/(?P<username>.+)/(?P<gesture_name>.+)', views.get_gesture_max_score),
     url('^gestures/(?P<username>.+)', views.get_gestures),
     url('^game_gestures/(?P<username>.+)', views.get_game_gestures),
 
@@ -53,6 +55,7 @@ urlpatterns = [
     path('update_notes', views.update_notes),
     path('new_game', views.new_game),
     path('update_profile', views.update_profile),
+    path('add_game_played', views.add_game_played),
 
     path('games_played', views.get_games_played),
     path('gestures_used', views.get_gestures_used),

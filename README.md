@@ -164,8 +164,9 @@ EMAIL_USE_TLS = <True|False>
 | `<API_URL>/new_user`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, photo_b64, user_type (admin, doctor or patient) | Add a new user to the database |
 | `<API_URL>/new_game`  | POST  | name, preview_link, photo_b64 | Add a new game to the database |
 | `<API_URL>/update_profile`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, (photo_b64), (password) | Update a user's medical notes |
-
-
+| `<API_URL>/add_game_played`  | POST  | usernarme, game_name, gesture_name, avg_difficulty, points, date | Add a new game played |
+| `<API_URL>/gesture_max_score/<username>/<gesture_name>`  | GET  | username, gesture name| Get the max score a patient was able to achieve using a certain gesture |
+| `<API_URL>/game_max_score/<game_name>`  | GET  | game_name | Get the max score of a certain game |
 
 
 

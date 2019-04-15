@@ -1,7 +1,7 @@
 import uuid
 from distutils.command import register
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -25,9 +25,10 @@ class Patient(models.Model):
 
 
 class Game(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     photo_b64 = models.TextField()
     preview_link = models.TextField()
+    js_location = models.TextField(default="")
 
     def __str__(self):
         return self.name
