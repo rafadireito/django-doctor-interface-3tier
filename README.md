@@ -139,6 +139,66 @@ EMAIL_PORT = <port_on_smtp>
 EMAIL_USE_TLS = <True|False>
 ```
 
+### 7. REGARDING CORS (CROSS-ORIGIN RESOURCE SHARING)
+If you're having problems related to XSS, you have to install _django-cors-headers_ (`pip install  django-cors-headers`).
+After this, some changes to the `settings.py` file must be applied:
+
+
+```python
+INSTALLED_APPS = [
+    'corsheaders',
+    ...
+    ]
+```
+```python
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    ...
+    ]
+```
+
+```python
+# For dealing with CORS (Cross Origin  Resource Sharing)
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+```
+
+As an example, you will be able to do the following:
+```javascript
+ $("#button").click(function () {
+    $.ajax({
+        type: "POST",
+        url: 'http://localhost:9000/login',
+        data: {"username": "admin", "password":"adminadmin"},
+        dataType: "json",
+        success: function (response) {
+            console.log(response)
+        }
+    });
+});
+```
 # REST API MAPPING
 
 | Url  | Request Type | Information sent to API | Action |
