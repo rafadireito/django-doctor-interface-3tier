@@ -377,8 +377,45 @@ def gesture_max_score(gesture, username):
     return {"score": g[1], "game":g[0]}
 
 
-def add_game_played(data):
+def get_games_score(username):
 
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+    pat_gestures = list(Gesture.objects.filter(patient=pat))
+    gamesplayed_for_user = [gp for gp in  GamePlayed.objects.all() if gp.gesture in pat_gestures]
+
+    games_played_dic = {}
+    for gp in gamesplayed_for_user:
+        if gp.game.name not in games_played_dic:
+            games_played_dic[gp.game.name] = [(gp.date, gp.points, gp.gesture.name)]
+        else:
+            games_played_dic[gp.game.name].append((gp.date, gp.points, gp.gesture.name))
+
+    return games_played_dic
+
+
+def get_getures(username):
+
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+    pat_gestures = list(Gesture.objects.filter(patient=pat))
+    gamesplayed_for_user = [gp for gp in GamePlayed.objects.all() if gp.gesture in pat_gestures]
+
+    gestures_dic = {}
+    for gp in gamesplayed_for_user:
+        if gp.gesture.name not in gestures_dic:
+            gestures_dic[gp.gesture.name] = {str(gp.date): 10} # 10 = repetitions -> falta meter na BD
+        else:
+            if str(gp.date) in gestures_dic[gp.gesture.name]:
+                gestures_dic[gp.gesture.name][str(gp.date)] += 10 # 10 = repetitions -> falta meter na BD
+            else:
+                gestures_dic[gp.gesture.name]= {str(gp.date): 10} # 10 = repetitions -> falta meter na BD
+
+    return gestures_dic
+
+def add_game_played(data):
 
     username = data.get("username")
     game_name = data.get("game_name")

@@ -41,6 +41,11 @@ urlpatterns = [
     path('my_profile', views.get_my_profile),
 
 
+    #NEW
+    url('^games_scores/(?P<username>.+)', views.get_games_scores),
+    url('^patient_gestures/(?P<username>.+)', views.get_patient_gestures),
+
+
     url('^profile/(?P<username>.+)', views.get_profile),
     url('^game_max_score/(?P<game_name>.+)', views.get_game_max_score),
     url('^gesture_max_score/(?P<username>.+)/(?P<gesture_name>.+)', views.get_gesture_max_score),

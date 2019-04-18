@@ -355,6 +355,26 @@ def add_game_played(request):
 
 @csrf_exempt
 @api_view(["GET"])
+def get_games_scores(request, username):
+    try:
+        data = queries.get_games_score(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_gestures(request, username):
+    try:
+        data = queries.get_getures(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["GET"])
 def reload_database(request):
     #######################
     ####### wipe BD #######
@@ -482,8 +502,6 @@ def reload_database(request):
     GamePlayed.objects.create(gesture=gest1, game=g3, points=112, average_difficulty=50, date="2001-01-01").save()
     GamePlayed.objects.create(gesture=gest1, game=g1, points=201, average_difficulty=80, date="2001-01-01").save()
     GamePlayed.objects.create(gesture=gest1, game=g2, points=300, average_difficulty=90, date="2001-01-01").save()
-    GamePlayed.objects.create(gesture=gest1, game=g4, points=122, average_difficulty=76, date="2001-01-01").save()
-    GamePlayed.objects.create(gesture=gest1, game=g1, points=234, average_difficulty=90, date="2001-01-01").save()
 
     GamePlayed.objects.create(gesture=gest2, game=g4, points=243, average_difficulty=20, date="2001-01-01").save()
     GamePlayed.objects.create(gesture=gest2, game=g2, points=122, average_difficulty=22, date="2001-01-01").save()

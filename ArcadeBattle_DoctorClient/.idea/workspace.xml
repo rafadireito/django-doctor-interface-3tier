@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1b82e30b-27eb-4165-aac8-a0ddfbec9a21" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ArcadeBattle_REST_API/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ArcadeBattle_REST_API/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/queries.py" beforeDir="false" afterPath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/queries.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../ArcadeBattle_REST_API/ArcadeBattle_REST_API/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ArcadeBattle_REST_API/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../ArcadeBattle_REST_API/app/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,7 +83,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
+            <state>
               <caret line="5" selection-start-line="5" selection-end-line="5" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -300,15 +302,17 @@
       <workItem from="1555334415274" duration="1865000" />
       <workItem from="1555494188094" duration="598000" />
       <workItem from="1555498733744" duration="1162000" />
+      <workItem from="1555534843258" duration="78000" />
+      <workItem from="1555535556797" duration="1689000" />
+      <workItem from="1555589178131" duration="1201000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="149621000" />
+    <option name="totallyTimeSpent" value="152589000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="812" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49905482" weight="0.17238913" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -324,7 +328,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3284974" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.26527777" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49928468" visible="true" weight="0.26527777" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49928468" visible="true" weight="0.9583333" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32916668" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -545,7 +549,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
+        <state>
           <caret line="5" selection-start-line="5" selection-end-line="5" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
