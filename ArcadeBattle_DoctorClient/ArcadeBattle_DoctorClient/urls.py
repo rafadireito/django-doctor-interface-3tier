@@ -26,6 +26,7 @@ urlpatterns = [
     path("about", views.about, name="about"),
 
     path("all_patients", views.all_patients, name="all_patients"),
+    path("my_patients", views.my_patients, name="my_patients"),
     path("all_admins", views.all_admins, name="all_admins"),
     path("all_doctors", views.all_doctors, name="all_doctors"),
     path("patient_statistics", views.patient_statistics, name="patient_statistics"),

@@ -88,8 +88,15 @@ def all_doctors():
     return doctors_data
 
 
-def all_patients():
-    patients = [p for p in Patient.objects.all() if p.person.user.groups.all()[0].name in ["patients_group"]]
+def get_patients(doctor=""):
+    if doctor == "":
+        patients = [p for p in Patient.objects.all() ]
+    else:
+        u = User.objects.get(username=doctor)
+        p = Person.objects.get(user=u)
+        d = Doctor.objects.get(person=p)
+        patients = [p for p in Patient.objects.all() if p.doctor == d]
+
     patients_data = []
 
     for p in patients:
@@ -276,8 +283,6 @@ def gestures_by_game(username):
 
 
 def add_user(data):
-
-
     username = data.get("username")
     first_name = data.get("first_name")
     last_name = data.get("last_name")
@@ -290,9 +295,11 @@ def add_user(data):
     print(list(User.objects.filter(username=username)))
     if list(User.objects.filter(username=username)) != []:
         error_message = "There is already a user with this email! The user WASN'T added to database!"
+        print(error_message)
         return False, error_message
     elif list(Person.objects.filter(nif=nif)) != []:
         error_message = "There is already a user with this nif! The user min WASN'T added to database!"
+        print(error_message)
         return False, error_message
 
     try:
@@ -302,62 +309,97 @@ def add_user(data):
     except:
         pw = "pw"
 
-    # create a user
-    u = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=pw)
-    u.save()
-
+    try:
+        # create a user
+        u = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=pw)
+        u.save()
+    except:
+        error_message = "Error creating a user"
+        print(error_message)
+        return False, error_message
     # link the user to a person
-    p = Person.objects.create(user=u, contact=contact, nif=nif, birth_date=birth_date, photo_b64=photo_b64)
-    p.save()
+    try:
+        p = Person.objects.create(user=u, contact=contact, nif=nif, birth_date=birth_date, photo_b64=photo_b64)
+        p.save()
+    except:
+        u.delete()
+        error_message = "Error creating a person"
+        print(error_message)
+        return False, error_message
+
 
     # add user to specific group
     if user_type == "admin":
-        # check if the group admins exists, else create it
-        # finally add admin to group
-        admins_group = list(Group.objects.filter(name='admins_group'))
+        try:
+            # check if the group admins exists, else create it
+            # finally add admin to group
+            admins_group = list(Group.objects.filter(name='admins_group'))
 
-        if len(admins_group) == 0:
-            admins_group = Group.objects.create(name='admins_group')
-            admins_group.save()
+            if len(admins_group) == 0:
+                admins_group = Group.objects.create(name='admins_group')
+                admins_group.save()
 
-        admins_group = Group.objects.get(name='admins_group')
-        admins_group.user_set.add(u)
+            admins_group = Group.objects.get(name='admins_group')
+            admins_group.user_set.add(u)
+        except:
+            u.delete()
+            error_message = "Error creating admin"
+            print(error_message)
+            return False, error_message
 
     elif user_type == "doctor":
-        print("Adding a doctor")
-        city = data.get("city")
-        specialty = data.get("specialty")
+        try:
+            print("Adding a doctor")
+            city = data.get("city")
+            specialty = data.get("specialty")
 
-        doct = Doctor.objects.create(person=p, city=city, specialty=specialty)
-        doct.save()
+            doct = Doctor.objects.create(person=p, city=city, specialty=specialty)
+            doct.save()
 
-        # check if the group doctor exists, else create it
-        # finally add docto to group
-        doctors_group = list(Group.objects.filter(name='doctors_group'))
+            # check if the group doctor exists, else create it
+            # finally add docto to group
+            doctors_group = list(Group.objects.filter(name='doctors_group'))
 
-        if len(doctors_group) == 0:
-            doctors_group = Group.objects.create(name='doctors_group')
-            doctors_group.save()
+            if len(doctors_group) == 0:
+                doctors_group = Group.objects.create(name='doctors_group')
+                doctors_group.save()
 
-        doctors_group = Group.objects.get(name='doctors_group')
-        doctors_group.user_set.add(u)
+            doctors_group = Group.objects.get(name='doctors_group')
+            doctors_group.user_set.add(u)
+        except:
+            u.delete()
+            error_message = "Error creating doctor"
+            print(error_message)
+            return False, error_message
 
     elif user_type == "patient":
+        try:
+            print("Adding a patient")
+            doctor_username = data.get("doctor")
 
-        pat = Patient.objects.create(person=p, notes="")
-        pat.save()
+            print(doctor_username)
+            d_u = User.objects.get(username=doctor_username)
+            d_p = Person.objects.get(user=d_u)
+            d = Doctor.objects.get(person=d_p)
 
-        # check if the group patients exists, else create it
-        # finally add patient to group
-        patients_group = list(Group.objects.filter(name='patients_group'))
+            pat = Patient.objects.create(person=p, notes="", doctor=d)
+            pat.save()
 
-        if len(patients_group) == 0:
-            patients_group = Group.objects.create(name='patients_group')
-            patients_group.save()
+            # check if the group patients exists, else create it
+            # finally add patient to group
+            patients_group = list(Group.objects.filter(name='patients_group'))
 
-        patients_group = Group.objects.get(name='patients_group')
-        patients_group.user_set.add(u)
+            if len(patients_group) == 0:
+                patients_group = Group.objects.create(name='patients_group')
+                patients_group.save()
 
+            patients_group = Group.objects.get(name='patients_group')
+            patients_group.user_set.add(u)
+        except:
+            u.delete()
+            error_message = "Error creating patient"
+            print(error_message)
+            return False, error_message
 
     state_message = "The user was added to database. Check your email for the password"
     return True, state_message

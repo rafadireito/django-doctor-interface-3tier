@@ -205,6 +205,7 @@ As an example, you will be able to do the following:
 | ------------- | :---: | :---: | ------------- |
 | `<API_URL>/login`  | POST  | usernarme, password| If authentication is succeeded, the user will receive an _auth token_ to use in future requests |
 | `<API_URL>/logout`  | GET  |  | The _auth token_ of this user will be disabled/removed |
+| `<API_URL>/whoami`  | GET  |  | Get informations about the user's username and type of user |
 | `<API_URL>/reload_database`  | GET  |  | Delete all entities and create a set of standard ones |
 | `<API_URL>/my_profile`  | GET  |  | Get my profile |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
@@ -214,6 +215,7 @@ As an example, you will be able to do the following:
 | `<API_URL>/all_games`  | GET  |  | Get a list of all games in database |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
 | `<API_URL>/profile/<username>`  | GET  | username | Get a specific user's profile |
+| `<API_URL>/my_patients/<username>`  | GET  | username | Get a the patients of a specific patient |
 | `<API_URL>/gestures/<username>`  | GET  | username | Get a the gestures of a specific patient |
 | `<API_URL>/gestures_by_game/<username>`  | GET  | username | Get a set of statistics regarding the gestures used in the different games of a user |
 | `<API_URL>/games_played`  | GET  |  | Get number of times each game was played |

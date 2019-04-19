@@ -19,6 +19,7 @@ class AddPatient(forms.Form):
     photo = forms.ImageField(label="Photo", required=False)
     birth_date = forms.DateField(label="Birth Date", help_text="Insert patient birth date",
                                  widget=forms.SelectDateWidget(years=range(1900, 2019)))
+    doctor = forms.CharField(label="Doctor's username", help_text="Insert doctor's username", required=False)
 
 
 class AddAdmin(forms.Form):

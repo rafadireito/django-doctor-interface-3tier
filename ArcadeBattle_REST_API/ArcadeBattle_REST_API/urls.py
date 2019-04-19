@@ -37,6 +37,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # GET
+    path('whoami', views.whoami),
     path('my_profile', views.get_my_profile),
     path('all_people', views.get_all_people),
     path('all_doctors', views.get_all_doctors),
@@ -45,6 +46,7 @@ urlpatterns = [
     path('all_games', views.get_all_games),
     path('games_played', views.get_games_played),
 
+    url('^my_patients/(?P<username>.+)', views.my_patients),
     url('^profile/(?P<username>.+)', views.get_profile),
     url('^gestures/(?P<username>.+)', views.get_gestures),
     url('^gestures_by_game/(?P<username>.+)', views.gestures_by_game),

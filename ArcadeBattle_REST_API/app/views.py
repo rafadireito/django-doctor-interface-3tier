@@ -64,7 +64,15 @@ def get_my_profile(request):
         return Response(status=HTTP_404_NOT_FOUND)
 
 
-
+@csrf_exempt
+@api_view(["GET"])
+def whoami(request):
+    try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        user = queries.username_from_token(auth_token)
+        return Response({"user_type": get_user_type(user), "username": user.username}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(["POST"])
@@ -160,10 +168,9 @@ def get_all_doctors(request):
 def get_all_patients(request):
 
     if verify_authorization(request, "admin") or verify_authorization(request, "doctor"):
-        patients_data = queries.all_patients()
+        patients_data = queries.get_patients()
         return Response({"user_type": get_user_type(None,request), "data":patients_data}, status=HTTP_200_OK)
     return Response(status=HTTP_403_FORBIDDEN)
-
 
 @csrf_exempt
 @api_view(["GET"])
@@ -173,6 +180,17 @@ def get_all_games(request):
         return Response({"user_type": get_user_type(None,request), "data":games_data}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def my_patients(request, username):
+    if verify_authorization(request, "doctor"):
+        print(username)
+        patients_data = queries.get_patients(username)
+        return Response({"user_type": get_user_type(None,request), "data":patients_data}, status=HTTP_200_OK)
+    return Response(status=HTTP_403_FORBIDDEN)
+
 
 @csrf_exempt
 @api_view(["DELETE"])
@@ -245,11 +263,14 @@ def get_profile(request, username):
 @api_view(["POST"])
 def new_user(request):
     try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        user = queries.username_from_token(auth_token)
+
         added, message = queries.add_user(request.data)
         if added == True:
-            return Response({"user_type": get_user_type(None, request), "state":"success", "state_message":message}, status=HTTP_200_OK)
+            return Response({"user_type": get_user_type(None, request), "username":user.username, "state":"success", "state_message":message}, status=HTTP_200_OK)
         else:
-            return Response({"user_type": get_user_type(None, request), "state": "error", "state_message": message}, status=HTTP_200_OK)
+            return Response({"user_type": get_user_type(None, request), "username":user.username,  "state": "error", "state_message": message}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
 
