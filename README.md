@@ -208,25 +208,25 @@ As an example, you will be able to do the following:
 | `<API_URL>/reload_database`  | GET  |  | Delete all entities and create a set of standard ones |
 | `<API_URL>/my_profile`  | GET  |  | Get my profile |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
+| `<API_URL>/all_admins`  | GET  |  | Get a list of all admins in database |
 | `<API_URL>/all_doctors`  | GET  |  | Get a list of all doctors in database |
 | `<API_URL>/all_patients`  | GET  |  | Get a list of all patients in database |
 | `<API_URL>/all_games`  | GET  |  | Get a list of all games in database |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
-| `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
-| `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
 | `<API_URL>/profile/<username>`  | GET  | username | Get a specific user's profile |
 | `<API_URL>/gestures/<username>`  | GET  | username | Get a the gestures of a specific patient |
-| `<API_URL>/game_gestures/<username>`  | GET  | username | Get a set of statistics regarding the games played by a specific user |
+| `<API_URL>/gestures_by_game/<username>`  | GET  | username | Get a set of statistics regarding the gestures used in the different games of a user |
 | `<API_URL>/games_played`  | GET  |  | Get number of times each game was played |
-| `<API_URL>/gestures_used`  | GET  |  | Get number of times each gesture was used in a game |
 | `<API_URL>/delete_user/<username>`  | DELETE  | username | Delete a specific user from database |
 | `<API_URL>/delete_gesture/<username>/<gesture_name>`  | GET  | username, gesture name| Delete a specific gesture of a certain user |
 | `<API_URL>/new_user`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, photo_b64, user_type (admin, doctor or patient) | Add a new user to the database |
 | `<API_URL>/new_game`  | POST  | name, preview_link, photo_b64 | Add a new game to the database |
-| `<API_URL>/update_profile`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, (photo_b64), (password) | Update a user's medical notes |
+| `<API_URL>/update_profile`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, (photo_b64), (password) | Update a user's profile |
+| `<API_URL>/update_notes`  | POST  | usernarme, notes | Update a patient's notes |
 | `<API_URL>/add_game_played`  | POST  | usernarme, game_name, gesture_name, avg_difficulty, points, date | Add a new game played |
-| `<API_URL>/gesture_max_score/<username>/<gesture_name>`  | GET  | username, gesture name| Get the max score a patient was able to achieve using a certain gesture |
-| `<API_URL>/game_max_score/<game_name>`  | GET  | game_name | Get the max score of a certain game |
+| `<API_URL>/games_played_by_user/<username>`  | GET  | username | Get all the info about the games played by a user |
+| `<API_URL>/patient_gestures/<username>/(chart)`  | GET  | username | Get the gesture repetitions by date |
+| `<API_URL>/patient_games_scores/<username>/(chart)`  | GET  | username | Get the average game score by date |
 
 
 
