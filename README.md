@@ -78,7 +78,7 @@ runserver.default_port = "<port>"   #9000
 | Action | Command |
 | --- | --- |
 | Get inside of the venv directory | `. venv/bin/activate` |
-| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` |
+| Install dependencies | `pip3 install pillow`, `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` |
 
 Now, we can set a variable to indicate where the API is deployed, which will make requests to this API a lot easier.
 In `settings.py`add the following variable:
