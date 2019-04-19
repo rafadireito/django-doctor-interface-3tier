@@ -140,7 +140,7 @@
 
 
             topGamesChart.data.labels = {{ games_quant.0|safe}};  //["Flappy Bird", "Gun Fight", "Quiz", "Space Invaders"];
-            topGamesChart.data.datasets[0].data = {{ games_quant.1 }} ; //[22,16,30,9];
+            topGamesChart.data.datasets[0].data = {{ games_quant.1|safe }} ; //[22,16,30,9];
             topGamesChart.update();
 
             Object.keys(gestureJSON).forEach(function(id) {
@@ -493,7 +493,6 @@
                                     <div class="row" style="margin-top: 2%">
 
                                         {% for g in patient_gestures %}
-
                                         <div class="col-md-3">
                                             <div class="card">
                                                 <div class="card-header" style="text-align: center; background:#8C8C8C; color:#fff">
@@ -746,7 +745,6 @@
 <script>
 function loadInfo(b64_image, g_name, u_mail)
     {
-        console.log(g_name);
         document.getElementById("gestureRemovePic").setAttribute('src', 'data:image/png;base64,' + b64_image );
 
         document.getElementById("id_gesture_name").value = g_name;

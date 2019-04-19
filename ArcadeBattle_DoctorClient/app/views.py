@@ -99,7 +99,7 @@ def all_doctors(request):
 
         if form.is_valid():
             email = form.cleaned_data['email']
-            result = requests.delete(API_URL + "delete/" + email, headers={'Authorization': 'Token ' + request.session["user_token"]})
+            result = requests.delete(API_URL + "delete_user/" + email, headers={'Authorization': 'Token ' + request.session["user_token"]})
 
             # if everything is ok -> update doctors list
             if result.status_code == status.HTTP_200_OK:
@@ -198,7 +198,7 @@ def patient_statistics(request):
         gestures_dict[str(g["id"])] = [g["name"], g["patient_difficulty"], g["default_difficulty"]]
 
     # get gestures from the api
-    result = requests.get(API_URL + "game_gestures/" + username, headers={'Authorization': 'Token ' + request.session["user_token"]})
+    result = requests.get(API_URL + "games_played_by_user/" + username, headers={'Authorization': 'Token ' + request.session["user_token"]})
 
     if result.status_code == status.HTTP_200_OK:
         data = result.json()
@@ -211,7 +211,7 @@ def patient_statistics(request):
     #get patient games stats
     games_quant = [[], []]
     games_quant[0] = [key for key in game_gesture_stats]
-    games_quant[1] = [game_gesture_stats[key][1] for key in game_gesture_stats]
+    games_quant[1] = [len(game_gesture_stats[key]) for key in game_gesture_stats]
 
     notes_form = UpdateNotes(p1)
     add_gesture_form = AddGesture()
@@ -359,21 +359,9 @@ def general_statistics(request):
 
     if result.status_code == status.HTTP_200_OK:
         people_list = result.json()
+        people_list = people_list["data"]
 
         for p in people_list:
-
-            born = dt.datetime.strptime(p['birth_date'], '%Y-%m-%d')
-            age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
-
-            if min_age["Age"] == 0 or min_age["Age"] > age:
-                min_age["Age"] = age
-                min_age["Name"] = p['first_name'] + " " + p['last_name']
-                min_age["Photo"] = p['photo_b64']
-
-            if max_age["Age"] < age:
-                max_age["Age"] = age
-                max_age["Name"] = p['first_name'] + " " + p['last_name']
-                max_age["Photo"] = p['photo_b64']
 
             if p['user_type'] == 'doctor' :
                 groups_count["Doctors"] += 1
@@ -388,14 +376,8 @@ def general_statistics(request):
     # get all games and count from the api
     result = requests.get(API_URL + "games_played", headers={'Authorization': 'Token ' + request.session["user_token"]})
     if result.status_code == status.HTTP_200_OK:
-        gamesPlayed = result.json()
-    else:
-        return redirect("login")
-
-    # get all gestures used and count from the api
-    result = requests.get(API_URL + "gestures_used", headers={'Authorization': 'Token ' + request.session["user_token"]})
-    if result.status_code == status.HTTP_200_OK:
-        gesturesUsed = result.json()
+        gamesPlayed = result.json()["data"]
+        print(gamesPlayed)
     else:
         return redirect("login")
 
@@ -417,8 +399,8 @@ def general_statistics(request):
         return redirect("login")
 
     return render(request, "general_statistics.html", {
-        "user":user_profile, "gesturesUsed":gesturesUsed, "gamesPlayed" : gamesPlayed,
-        "groups_count":groups_count, "min_age":min_age, "max_age":max_age
+        "user":user_profile, "gamesPlayed" : gamesPlayed,
+        "groups_count":groups_count
     })
 
 
@@ -552,6 +534,8 @@ def add_doctor(request):
             data["username"] = form_data["email"]
             data["birth_date"] = form_data["birth_date"]
             data["nif"] = form_data["nif"]
+            data["city"] = form_data["city"]
+            data["specialty"] = form_data["specialty"]
             photo = form_data["photo"]
             if photo != None:
                 photo_b64 = base64.b64encode(photo.file.read())
@@ -569,7 +553,7 @@ def add_doctor(request):
                 request.session["user_type"] = data["user_type"]
 
                 if data["state"] == "error":
-                    return render(request, "add_doctor.html.html",{'form': form, "state": data["state"], "state_message": data["state_message"]})
+                    return render(request, "add_doctor.html",{'form': form, "state": data["state"], "state_message": data["state_message"]})
                 elif data["state"] == "success":
                     form = AddDoctor()
                     return render(request, "add_doctor.html", {'form': form, "state": data["state"], "state_message": data["state_message"]})
@@ -626,7 +610,6 @@ def about(request):
     if result.status_code == status.HTTP_200_OK:
         data = result.json()
         request.session["user_type"] = data["user_type"]
-        user_profile = data["data"]
     else:
         return redirect("login")
 
@@ -648,6 +631,9 @@ def about(request):
             photo = form_data["photo"]
             password = form_data["new_password"]
 
+            # for doctors
+            city = form_data["city"]
+            specialty = form_data["specialty"]
 
             if password != '':
                 data["password"] = password
@@ -657,6 +643,13 @@ def about(request):
                 photo_b64 = base64.b64encode(photo.file.read())
                 photo_b64 = photo_b64.decode()
                 data["photo_b64"] = photo_b64
+
+            if request.session["user_type"] == "doctor":
+                if city != '':
+                    data["city"] = city
+                if specialty != '':
+                    data["specialty"] = specialty
+
 
             # try to update user in the API
             result = requests.post(API_URL + "update_profile", data=data, headers={'Authorization': 'Token ' + request.session["user_token"]})
@@ -670,7 +663,7 @@ def about(request):
             print("Invalid form")
             print(messages.error(request, "Error"))
     else:
-        form = UpdateProfile(user_profile)
+        form = UpdateProfile(data)
 
     return render(request, "about.html", {'form': form})
 

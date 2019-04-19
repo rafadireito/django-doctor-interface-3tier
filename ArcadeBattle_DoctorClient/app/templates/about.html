@@ -120,6 +120,27 @@
                                 </div>
                             </div>
 
+                            {% if request.session.user_type == "doctor" %}
+
+                            <div class="row form-group col-lg-12 col-md-12 col-sm-12">
+                                <div class="col-12 col-md-4 col-sm-6 form-control" style="margin-bottom:30px; border: 0; text-align: right">
+                                    {{ form.city.label_tag }}
+                                </div>
+                                <div class="col-12 col-md-6 col-sm-6" style="margin-bottom:30px">
+                                    {{ form.city }}
+                                </div>
+                            </div>
+
+                            <div class="row form-group col-lg-12 col-md-12 col-sm-12">
+                                <div class="col-12 col-md-4 col-sm-6 form-control" style="margin-bottom:30px; border: 0; text-align: right">
+                                    {{ form.specialty.label_tag }}
+                                </div>
+                                <div class="col-12 col-md-6 col-sm-6" style="margin-bottom:30px">
+                                    {{ form.specialty }}
+                                </div>
+                            </div>
+
+                            {% endif %}
                             <div class="row form-group col-lg-12 col-md-12 col-sm-12">
                                 <div class="col-12 col-md-4 col-sm-6 form-control" style="margin-bottom:30px; border: 0; text-align: right">
                                     {{ form.photo.label_tag }}
