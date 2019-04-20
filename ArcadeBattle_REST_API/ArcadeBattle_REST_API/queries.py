@@ -109,7 +109,8 @@ def get_patients(doctor=""):
         dic["contact"] = p.person.contact
         dic["nif"] = p.person.nif
         dic["notes"] = p.notes
-        dic["doctor"] = p.doctor.person.user.username
+        dic["doctor"] = {"username": p.doctor.person.user.username, "first_name": p.doctor.person.user.first_name,
+                         "last_name":p.doctor.person.user.last_name}
         dic["birth_date"] = p.person.birth_date.__str__()
         patients_data.append(dic)
 
@@ -156,7 +157,8 @@ def user_profile(username):
             if list(Patient.objects.filter(person=p)) != []:
                 p = Patient.objects.get(person=Person.objects.get(user = User.objects.get(username=username)))
                 dic["notes"] = p.notes
-                dic["doctor"] = p.doctor.person.user.username
+                dic["doctor"] = {"username": p.doctor.person.user.username, "first_name": p.doctor.person.user.first_name,
+                                 "last_name": p.doctor.person.user.last_name}
             # if the user is a doctor
             elif list(Doctor.objects.filter(person=p)) != []:
                 d = Doctor.objects.get(person=Person.objects.get(user=User.objects.get(username=username)))
