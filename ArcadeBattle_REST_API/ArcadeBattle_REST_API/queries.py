@@ -478,7 +478,7 @@ def get_gestures(username, data_for):
             tmp = [(k, gestures_dic[key][k]) for k in gestures_dic[key]]
             tmp = sorted(tmp, key=lambda x: x[0])
 
-            dic[key] = [ [e[0] for e in tmp] , [[e[1] for e in tmp]] ]
+            dic[key] = [ [e[0] for e in tmp] , [e[1] for e in tmp] ]
         gestures_dic = dic
     return gestures_dic
 
@@ -519,7 +519,7 @@ def patient_games_scores(username, data_for):
             tmp = [(k, games_dic[key][k]) for k in games_dic[key]]
             tmp = sorted(tmp, key=lambda x: x[0])
 
-            dic[key] = [ [e[0] for e in tmp] , [[e[1] for e in tmp]] ]
+            dic[key] = [ [e[0] for e in tmp] , [e[1] for e in tmp] ]
         games_dic = dic
 
     return games_dic
