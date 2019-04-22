@@ -317,7 +317,6 @@ def get_games_played(request):
 
 @csrf_exempt
 @api_view(["GET"])
-# {'Flappy Bird': ({'Two Fingers Up': 4, 'Perfect Symbol': 2}, 6), 'Pacman': ({'Two Fingers Up': 2, 'Perfect Symbol': 3}, 5), ...
 def gestures_by_game(request, username):
     user_type = get_user_type(username)
     if user_type != "patient":
@@ -328,8 +327,6 @@ def gestures_by_game(request, username):
         return Response({"user_type": get_user_type(None, request), "data": game_gestures_stat}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
-
-
 
 
 

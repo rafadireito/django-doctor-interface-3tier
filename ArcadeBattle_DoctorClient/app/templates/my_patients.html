@@ -54,7 +54,7 @@
                                 <td class="text-center" onclick="access_patient(this)">{{ pat.birth_date }}</td>
                                 <td class="text-center" onclick="access_patient(this)">{{ pat.nif }}</td>
                                 <td onclick="access_patient(this)">{{ pat.username }}</td>
-                                <td onclick="access_patient(this)">{{ pat.doctor }}</td>
+                                <td onclick="access_patient(this)">{{ pat.doctor.first_name }} {{ pat.doctor.last_name }}</td>
                                 {% if request.session.user_type == "admin" or request.session.user_type == "doctor"%}
                                 <td class="text-center">
                                     <button type="button" class="btn-sm btn-danger"

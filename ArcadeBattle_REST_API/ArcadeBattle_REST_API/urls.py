@@ -66,7 +66,6 @@ urlpatterns = [
 
 
 
-
     #POST
     path('new_user', views.new_user),
     path('new_game', views.new_game),
