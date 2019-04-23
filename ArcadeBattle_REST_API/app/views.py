@@ -206,13 +206,16 @@ def delete_user(request, username):
         else:
             return Response(status=HTTP_403_FORBIDDEN)
 
+        print("HELLO!")
+
         # update lists
+        print(user_type)
         if user_type == "admin":
             return Response({"user_type": get_user_type(None, request), "data": queries.all_admins()}, status=HTTP_200_OK)
         elif user_type == "doctor":
             return Response({"user_type": get_user_type(None, request), "data": queries.all_doctors()}, status=HTTP_200_OK)
         elif user_type == "patient":
-            return Response({"user_type": get_user_type(None, request), "data": queries.all_patients()}, status=HTTP_200_OK)
+            return Response({"user_type": get_user_type(None, request), "data": queries.get_patients()}, status=HTTP_200_OK)
         else:
             return Response(status=HTTP_400_BAD_REQUEST)
     except:

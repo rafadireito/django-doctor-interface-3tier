@@ -61,7 +61,7 @@ def all_admins(request):
 
         if form.is_valid():
             email = form.cleaned_data['email']
-            result = requests.delete(API_URL + "delete/" + email, headers={'Authorization': 'Token ' + request.session["user_token"]})
+            result = requests.delete(API_URL + "delete_user/" + email, headers={'Authorization': 'Token ' + request.session["user_token"]})
 
             # if everything is ok -> update admins list
             if result.status_code == status.HTTP_200_OK:
