@@ -24,40 +24,68 @@ router = routers.DefaultRouter()
 #router.register(r'users', views.UserViewSet)
 #router.register(r'groups', views.GroupViewSet)
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+
+    # Authentication
     path('login', views.login),
     # new
     path('login_cc', views.login_cc),
     path('logout', views.logout),
 
+    # Other important methods
+    path('reload_database', views.reload_database),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # GET
+    path('whoami', views.whoami),
+    path('my_profile', views.get_my_profile),
     path('all_people', views.get_all_people),
-    path('all_admins', views.get_all_admins),
     path('all_doctors', views.get_all_doctors),
     path('all_patients', views.get_all_patients),
+    path('all_admins', views.get_all_admins),
     path('all_games', views.get_all_games),
-    path('my_profile', views.get_my_profile),
+    path('games_played', views.get_games_played),
 
-
+    url('^my_patients/(?P<username>.+)', views.my_patients),
     url('^profile/(?P<username>.+)', views.get_profile),
     url('^gestures/(?P<username>.+)', views.get_gestures),
-    url('^game_gestures/(?P<username>.+)', views.get_game_gestures),
+    url('^gestures_by_game/(?P<username>.+)', views.gestures_by_game),
+    url('^games_played_by_user/(?P<username>.+)', views.games_played_by_user),
 
+    # keep order
+    url('^patient_gestures/(?P<username>.+)/(?P<data_for>.+)', views.get_patient_gestures),
+    url('^patient_gestures/(?P<username>.+)', views.get_patient_gestures),
+    # keep order
+    url('^patient_games_scores/(?P<username>.+)/(?P<data_for>.+)', views.patient_games_scores),
+    url('^patient_games_scores/(?P<username>.+)', views.patient_games_scores),
+
+
+    # DELETE
     url('^delete_user/(?P<username>.+)', views.delete_user),
     url('^delete_gesture/(?P<username>.+)/(?P<gesture_name>.+)', views.delete_gesture),
 
+
+
     #POST
     path('new_user', views.new_user),
-    path('update_notes', views.update_notes),
     path('new_game', views.new_game),
     path('update_profile', views.update_profile),
+    path('update_notes', views.update_notes),
+    path('add_game_played', views.add_game_played),
 
-    path('games_played', views.get_games_played),
-    path('gestures_used', views.get_gestures_used),
-    path('reload_database', views.reload_database),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+
+    ###################################################################
+
+
+
+
+
+
+
+
+
+
+
 ]

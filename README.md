@@ -19,7 +19,7 @@
 | Action | Command |
 | --- | --- |
 | Get inside of the venv directory | `. venv/bin/activate` |
-| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` ;  `pip install mysqlclient`|
+| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` ;  `pip3 install mysqlclient`|
 
 ### 2. MySQL Databse
 On Ubuntu:
@@ -27,12 +27,10 @@ On Ubuntu:
 | Action | Command |
 | --- | --- |
 | Install MySQL | `apt install mysql-server` |
-| Access MySQL  as admin | `mysql -u root -p` (default password: _root_)|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
-| Create a new user and set it's password | `CREATE USER 'arcadebattle'@'localhost' IDENTIFIED BY 'arcadebattle';`|
+| Access MySQL  as admin | `sudo mysql -u root -p` (default password: _root_)|
 | Create the database | `CREATE DATABASE arcadebattle_db;`|
-| Grant priviliges to the new user | `GRANT ALL PRIVILEGES ON arcadebattle_db. * TO 'arcadebattle'@'localhost’;`|
-| Create the database | `REATE DATABASE arcadebattle_db;`|
+| Create a new user and set it's password | `CREATE USER 'arcadebattle'@'localhost' IDENTIFIED BY 'arcadebattle';`|
+| Grant priviliges to the new user | `GRANT ALL PRIVILEGES ON arcadebattle_db. * TO 'arcadebattle'@'localhost';`|
 | Find out the port where MySQL is running | `SHOW VARIABLES WHERE Variable_name = 'port';`|
 
 After this steps, we will need to configure our REST API to access the new database we just created. For doing so, in `settings.py`file of the REST API Django Project we need to add the following code:
@@ -80,7 +78,7 @@ runserver.default_port = "<port>"   #9000
 | Action | Command |
 | --- | --- |
 | Get inside of the venv directory | `. venv/bin/activate` |
-| Install dependencies | `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` |
+| Install dependencies | `pip3 install pillow`, `pip3 install djangorestframework==3.7.7` ;  `pip3 install requests` ; `pip3 install django` |
 
 Now, we can set a variable to indicate where the API is deployed, which will make requests to this API a lot easier.
 In `settings.py`add the following variable:
@@ -96,8 +94,8 @@ result = requests.get(API_URL + "all_doctors", headers={'Authorization': 'Token 
 ### 4. Testing
 
 First of all, deploys the Django Projects:
-1. Deploy the REST API (`pyhton manage.py runserver`)
-2. Deploy the Client's Project (`pyhton manage.py runserver`)
+1. Deploy the REST API (`pyhton3 manage.py runserver`)
+2. Deploy the Client's Project (`pyhton3 manage.py runserver`)
 
 On [Postman](https://www.getpostman.com/):
 
@@ -141,33 +139,96 @@ EMAIL_PORT = <port_on_smtp>
 EMAIL_USE_TLS = <True|False>
 ```
 
+### 7. REGARDING CORS (CROSS-ORIGIN RESOURCE SHARING)
+If you're having problems related to XSS, you have to install _django-cors-headers_ (`pip install  django-cors-headers`).
+After this, some changes to the `settings.py` file must be applied:
+
+
+```python
+INSTALLED_APPS = [
+    'corsheaders',
+    ...
+    ]
+```
+```python
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    ...
+    ]
+```
+
+```python
+# For dealing with CORS (Cross Origin  Resource Sharing)
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+```
+
+As an example, you will be able to do the following:
+```javascript
+ $("#button").click(function () {
+    $.ajax({
+        type: "POST",
+        url: 'http://localhost:9000/login',
+        data: {"username": "admin", "password":"adminadmin"},
+        dataType: "json",
+        success: function (response) {
+            console.log(response)
+        }
+    });
+});
+```
 # REST API MAPPING
 
 | Url  | Request Type | Information sent to API | Action |
 | ------------- | :---: | :---: | ------------- |
 | `<API_URL>/login`  | POST  | usernarme, password| If authentication is succeeded, the user will receive an _auth token_ to use in future requests |
 | `<API_URL>/logout`  | GET  |  | The _auth token_ of this user will be disabled/removed |
+| `<API_URL>/whoami`  | GET  |  | Get informations about the user's username and type of user |
 | `<API_URL>/reload_database`  | GET  |  | Delete all entities and create a set of standard ones |
 | `<API_URL>/my_profile`  | GET  |  | Get my profile |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
+| `<API_URL>/all_admins`  | GET  |  | Get a list of all admins in database |
 | `<API_URL>/all_doctors`  | GET  |  | Get a list of all doctors in database |
 | `<API_URL>/all_patients`  | GET  |  | Get a list of all patients in database |
 | `<API_URL>/all_games`  | GET  |  | Get a list of all games in database |
 | `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
-| `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
-| `<API_URL>/all_people`  | GET  |  | Get a list of all people in database |
 | `<API_URL>/profile/<username>`  | GET  | username | Get a specific user's profile |
+| `<API_URL>/my_patients/<username>`  | GET  | username | Get a the patients of a specific patient |
 | `<API_URL>/gestures/<username>`  | GET  | username | Get a the gestures of a specific patient |
-| `<API_URL>/game_gestures/<username>`  | GET  | username | Get a set of statistics regarding the games played by a specific user |
+| `<API_URL>/gestures_by_game/<username>`  | GET  | username | Get a set of statistics regarding the gestures used in the different games of a user |
 | `<API_URL>/games_played`  | GET  |  | Get number of times each game was played |
-| `<API_URL>/gestures_used`  | GET  |  | Get number of times each gesture was used in a game |
 | `<API_URL>/delete_user/<username>`  | DELETE  | username | Delete a specific user from database |
 | `<API_URL>/delete_gesture/<username>/<gesture_name>`  | GET  | username, gesture name| Delete a specific gesture of a certain user |
 | `<API_URL>/new_user`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, photo_b64, user_type (admin, doctor or patient) | Add a new user to the database |
 | `<API_URL>/new_game`  | POST  | name, preview_link, photo_b64 | Add a new game to the database |
-| `<API_URL>/update_profile`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, (photo_b64), (password) | Update a user's medical notes |
-
-
+| `<API_URL>/update_profile`  | POST  | usernarme, first_name, last_name, contact, birth_date, nif, (photo_b64), (password) | Update a user's profile |
+| `<API_URL>/update_notes`  | POST  | usernarme, notes | Update a patient's notes |
+| `<API_URL>/add_game_played`  | POST  | usernarme, game_name, gesture_name, avg_difficulty, points, date | Add a new game played |
+| `<API_URL>/games_played_by_user/<username>`  | GET  | username | Get all the info about the games played by a user |
+| `<API_URL>/patient_gestures/<username>/(chart)`  | GET  | username | Get the gesture repetitions by date |
+| `<API_URL>/patient_games_scores/<username>/(chart)`  | GET  | username | Get the average game score by date |
 
 
 

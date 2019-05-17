@@ -57,6 +57,17 @@
                                 </div>
                             </div>
 
+                            {% if request.session.user_type != "doctor" %}
+                            <div class="row form-group">
+                                <div class="col col-md-1 col-sm-2 ">
+                                    {{ form.doctor.label_tag }}
+                                </div>
+                                <div class="col-12 col-md-5 col-sm-4">
+                                    {{ form.doctor }}
+                                </div>
+                            </div>
+                            {% endif %}
+
                             <div class="row form-group">
                                 <div class="col col-md-1 col-sm-2 ">
                                     {{ form.photo.label_tag }}

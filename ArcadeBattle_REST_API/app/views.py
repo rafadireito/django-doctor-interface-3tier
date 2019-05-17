@@ -80,32 +80,51 @@ def verify_authorization(request, group):
 @csrf_exempt
 @api_view(["GET"])
 def get_my_profile(request):
-    auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
-    username = queries.username_from_token(auth_token)
-    profile = queries.user_profile(username)
-    return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
+    try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        username = queries.username_from_token(auth_token)
+        profile = queries.user_profile(username)
+        return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
+
+@csrf_exempt
+@api_view(["GET"])
+def whoami(request):
+    try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        user = queries.username_from_token(auth_token)
+        return Response({"user_type": get_user_type(user), "username": user.username}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(["POST"])
 def update_profile(request):
-    auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
-    username = queries.username_from_token(auth_token)
+    try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        username = queries.username_from_token(auth_token)
+        user_type = get_user_type(username)
+        result = queries.update_profile(username, user_type, request.data)
 
-    result = queries.update_profile(username, request.data)
-
-    if result:
-        return Response(status=HTTP_200_OK)
-    return Response(status=HTTP_400_BAD_REQUEST)
+        if result:
+            return Response({"user_type": get_user_type(None, request), "data": {}}, status=HTTP_200_OK)
+        return Response(status=HTTP_400_BAD_REQUEST)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 @csrf_exempt
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def login(request):
+
     username = request.data.get("username")
     password = request.data.get("password")
     if username is None or password is None:
+        print("here")
+
         return Response({'error': 'Please provide both username and password'}, status=HTTP_400_BAD_REQUEST)
 
     user = authenticate(username=username, password=password)
@@ -191,10 +210,13 @@ def logout(request):
 @csrf_exempt
 @api_view(["GET"])
 def get_all_people(request):
-    people_data = queries.all_people()
-    return Response(people_data, status=HTTP_200_OK)
+    try:
+        people_data = queries.all_people()
+        return Response({"user_type": get_user_type(None,request), "data":people_data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
-
+@csrf_exempt
 @csrf_exempt
 @api_view(["GET"])
 def get_all_admins(request):
@@ -212,69 +234,83 @@ def get_all_doctors(request):
     if verify_authorization(request, "admin") or verify_authorization(request, "doctor"):
         doctors_data = queries.all_doctors()
         return Response({"user_type": get_user_type(None,request), "data":doctors_data}, status=HTTP_200_OK)
-    return Response(status=HTTP_404_NOT_FOUND)
+    return Response(status=HTTP_403_FORBIDDEN)
 
 @csrf_exempt
 @api_view(["GET"])
 def get_all_patients(request):
 
     if verify_authorization(request, "admin") or verify_authorization(request, "doctor"):
-        patients_data = queries.all_patients()
+        patients_data = queries.get_patients()
         return Response({"user_type": get_user_type(None,request), "data":patients_data}, status=HTTP_200_OK)
-    return Response(status=HTTP_404_NOT_FOUND)
-
+    return Response(status=HTTP_403_FORBIDDEN)
 
 @csrf_exempt
 @api_view(["GET"])
 def get_all_games(request):
+    try:
+        games_data = queries.all_games()
+        return Response({"user_type": get_user_type(None,request), "data":games_data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
-    games_data = queries.all_games()
-    return Response({"user_type": get_user_type(None,request), "data":games_data}, status=HTTP_200_OK)
 
-    #return Response(status=HTTP_404_NOT_FOUND)
+@csrf_exempt
+@api_view(["GET"])
+def my_patients(request, username):
+    if verify_authorization(request, "doctor"):
+        print(username)
+        patients_data = queries.get_patients(username)
+        return Response({"user_type": get_user_type(None,request), "data":patients_data}, status=HTTP_200_OK)
+    return Response(status=HTTP_403_FORBIDDEN)
+
 
 @csrf_exempt
 @api_view(["DELETE"])
 def delete_user(request, username):
+    try:
+        user_type = get_user_type(username)
+        # admins can delete all users
+        if verify_authorization(request, "admin"):
+            queries.delete_user(username)
+        # doctors can delete patients
+        elif verify_authorization(request, "doctor") and user_type == "patient":
+            queries.delete_user(username)
+        else:
+            return Response(status=HTTP_403_FORBIDDEN)
 
-    user_type = get_user_type(username)
+        print("HELLO!")
 
-    # admins can delete all users
-    if verify_authorization(request, "admin"):
-        queries.delete_user(username)
-    # doctors can delete patients
-    elif verify_authorization(request, "doctor") and user_type == "patient":
-        queries.delete_user(username)
-    else:
-        return Response(status=HTTP_403_FORBIDDEN)
-
-
-    # update lists
-    if user_type == "admin":
-        return Response({"user_type": get_user_type(None, request), "data": queries.all_admins()}, status=HTTP_200_OK)
-    elif user_type == "doctor":
-        return Response({"user_type": get_user_type(None, request), "data": queries.all_doctors()}, status=HTTP_200_OK)
-    elif user_type == "patient":
-        return Response({"user_type": get_user_type(None, request), "data": queries.all_patients()}, status=HTTP_200_OK)
-    else:
-        return Response(status=HTTP_400_BAD_REQUEST)
+        # update lists
+        print(user_type)
+        if user_type == "admin":
+            return Response({"user_type": get_user_type(None, request), "data": queries.all_admins()}, status=HTTP_200_OK)
+        elif user_type == "doctor":
+            return Response({"user_type": get_user_type(None, request), "data": queries.all_doctors()}, status=HTTP_200_OK)
+        elif user_type == "patient":
+            return Response({"user_type": get_user_type(None, request), "data": queries.get_patients()}, status=HTTP_200_OK)
+        else:
+            return Response(status=HTTP_400_BAD_REQUEST)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 @csrf_exempt
 @api_view(["DELETE"])
 def delete_gesture(request, username, gesture_name):
+    try:
+        user_type = get_user_type(username)
+        # admins and doctors can delete gestures
+        if (verify_authorization(request, "admin") or verify_authorization(request, "doctor")) and user_type == "patient":
+            queries.delete_gesture(username, gesture_name)
+        else:
+            return Response(status=HTTP_403_FORBIDDEN)
 
-    user_type = get_user_type(username)
-
-    # admins and doctors can delete gestures
-    if (verify_authorization(request, "admin") or verify_authorization(request, "doctor")) and user_type == "patient":
-        queries.delete_gesture(username, gesture_name)
-    else:
-        return Response(status=HTTP_403_FORBIDDEN)
-
-    #update gestures
-    data = queries.get_patient_gestures(username)
-    return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+        #update gestures
+        data = queries.get_patient_gestures(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 @csrf_exempt
@@ -302,100 +338,134 @@ def get_profile(request, username):
 @csrf_exempt
 @api_view(["POST"])
 def new_user(request):
-    added, message = queries.add_user(request.data)
+    try:
+        auth_token = request.META["HTTP_AUTHORIZATION"].split()[1]
+        user = queries.username_from_token(auth_token)
 
-    if added == True:
-        return Response({"user_type": get_user_type(None, request), "state":"success", "state_message":message}, status=HTTP_200_OK)
-    else:
-        return Response({"user_type": get_user_type(None, request), "state": "error", "state_message": message}, status=HTTP_200_OK)
-
+        added, message = queries.add_user(request.data)
+        if added == True:
+            return Response({"user_type": get_user_type(None, request), "username":user.username, "state":"success", "state_message":message}, status=HTTP_200_OK)
+        else:
+            return Response({"user_type": get_user_type(None, request), "username":user.username,  "state": "error", "state_message": message}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 @csrf_exempt
 @api_view(["POST"])
 def new_game(request):
+    try:
+        user_type = get_user_type(None, request)
+        if user_type == "admin":
+            added, message = queries.add_game(request.data)
 
-    user_type = get_user_type(None, request)
+            if added == True:
+                return Response({"user_type": get_user_type(None, request), "state":"success", "state_message":message}, status=HTTP_200_OK)
+            else:
+                return Response({"user_type": get_user_type(None, request), "state": "error", "state_message": message}, status=HTTP_200_OK)
+        return Response(status=HTTP_403_FORBIDDEN)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
-    if user_type == "admin":
-
-        added, message = queries.add_game(request.data)
-
-        if added == True:
-            return Response({"user_type": get_user_type(None, request), "state":"success", "state_message":message}, status=HTTP_200_OK)
-        else:
-            return Response({"user_type": get_user_type(None, request), "state": "error", "state_message": message}, status=HTTP_200_OK)
-
-    return Response(status=HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(["GET"])
 def get_gestures(request, username):
-
     user_type = get_user_type(username)
-
     if user_type != "patient":
         return Response(status=HTTP_400_BAD_REQUEST)
 
-    data = queries.get_patient_gestures(username)
-    # return list of gestures
-    return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    try:
+        data = queries.get_patient_gestures(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 @csrf_exempt
 @api_view(["GET"])
 def get_games_played(request):
-
-    games_played = GamePlayed.objects.all()
-    dic = {}
-
-    for gp in games_played:
-        if gp.game.name not in dic:
-            dic[gp.game.name] = GamePlayed.objects.filter(game=Game.objects.get(name=gp.game.name)).count()
-
-    return Response(dic, status=HTTP_200_OK)
+    try:
+        data = queries.get_games_played()
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(["GET"])
-def get_gestures_used(request):
-
-    games_played = GamePlayed.objects.all()
-    dic = {}
-
-    for gp in games_played:
-        if gp.gesture.name not in dic:
-            dic[gp.gesture.name] = GamePlayed.objects.filter(gesture=Gesture.objects.get(name=gp.gesture.name)).count()
-
-    return Response(dic, status=HTTP_200_OK)
-
-
-@csrf_exempt
-@api_view(["GET"])
-# {'Flappy Bird': ({'Two Fingers Up': 4, 'Perfect Symbol': 2}, 6), 'Pacman': ({'Two Fingers Up': 2, 'Perfect Symbol': 3}, 5), ...
-def get_game_gestures(request, username):
-
+def gestures_by_game(request, username):
     user_type = get_user_type(username)
-
     if user_type != "patient":
         return Response(status=HTTP_400_BAD_REQUEST)
 
-    game_gestures_stat = queries.game_gestures_stat(username)
-    return Response({"user_type": get_user_type(None, request), "data": game_gestures_stat}, status=HTTP_200_OK)
+    try:
+        game_gestures_stat = queries.gestures_by_game(username)
+        return Response({"user_type": get_user_type(None, request), "data": game_gestures_stat}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
 
 
 @csrf_exempt
 @api_view(["POST"])
 def update_notes(request):
-    queries.update_notes(request.data)
+    try:
+        queries.update_notes(request.data)
+        profile = queries.user_profile(request.data["username"])
+        return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
 
-    profile = queries.user_profile(request.data["username"])
 
-    return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
+@csrf_exempt
+@api_view(["POST"])
+def add_game_played(request):
+    try:
+        queries.add_game_played(request.data)
+        return Response({"user_type": get_user_type(None, request), "data": {}}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def games_played_by_user(request, username):
+    try:
+        data = queries.games_played_by_user(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_gestures(request, username, data_for=''):
+    print(username)
+    try:
+        data = queries.get_gestures(username, data_for)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+
+@csrf_exempt
+@api_view(["GET"])
+def patient_games_scores(request, username, data_for=''):
+    print(username)
+    try:
+        data = queries.patient_games_scores(username, data_for)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
 
 @csrf_exempt
 @api_view(["GET"])
 @permission_classes((AllowAny,))
 def reload_database(request):
+<<<<<<< HEAD
     #######################
     ####### wipe BD #######
     #######################
@@ -586,3 +656,10 @@ def reload_database(request):
 
     data = {'Reloaded': True}
     return Response(data, status=HTTP_200_OK)
+=======
+    try:
+        data = queries.reload_database(request)
+        return Response({ "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+>>>>>>> db1a0cfaafe312de1e1205a0991a886ec44c8b6b
