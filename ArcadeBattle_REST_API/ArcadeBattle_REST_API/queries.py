@@ -7,6 +7,12 @@ from django.core.mail import send_mail
 from app.models import Person, Patient, Gesture, Game, GamePlayed
 
 
+def get_user_by_cc_number (cc_number):
+    p = Person.objects.get(nif=cc_number)
+    return p.user
+
+
+
 def get_user_type(username, request=None):
     if username == None:
         token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]

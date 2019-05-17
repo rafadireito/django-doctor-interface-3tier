@@ -26,10 +26,14 @@ from rest_framework.status import (
     HTTP_200_OK
 )
 
-# Create your views here.
 import  datetime as dt
 from datetime import date
 
+
+import sys
+sys.path.insert(0, 'app/cc')
+import CC
+import AssymmetricEncryption
 
 def index(request):
     # if user is not authenticaded -> login
@@ -683,26 +687,49 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST, request.FILES)
         if form.is_valid():
+
             username = request.POST['username']
             password = request.POST['password']
+            cc = form.cleaned_data.get("cc_btn") == "sign in with cc"
 
-            # try to login in the API
-            result = requests.post(API_URL + "login", data={'username': username, 'password':password})
+            if cc or (username is not None and password is not None):
 
-            # 200 - login successful
-            if result.status_code == status.HTTP_200_OK:
-                response = result.json()
-                request.session["user_token"] = response["token"]
-                request.session["user_type"] = response["user_type"]
-                request.session["first_name"] = response["first_name"]
-                request.session["last_name"] = response["last_name"]
-                request.session["photo_b64"] = response["photo_b64"]
-                request.session["email"] = response["email"]
-                return redirect("/general_statistics")
+                if cc:
+                    certificate = AssymmetricEncryption.cert_to_b64(CC.cc_data.authentication_cert)
+
+                    result = requests.post(API_URL + "login_cc", data={'certificate': certificate})
+
+                    # get the timestamp from the response
+                    if result.status_code == status.HTTP_200_OK:
+                        response = result.json()
+                        timestamp = response["timestamp"]
+
+                        # sign the timestamp and send it back
+                        signed_timestamp = base64.b64encode(CC.cc_sign(timestamp))
+
+                        result = requests.post(API_URL + "login_cc",  data={'certificate': certificate, 'signature': signed_timestamp})
+
+                elif username is not None and password is not None:
+
+                    # try to login in the API
+                    result = requests.post(API_URL + "login", data={'username': username, 'password':password})
+
+
+                # 200 - login successful
+                if result.status_code == status.HTTP_200_OK:
+                    response = result.json()
+                    request.session["user_token"] = response["token"]
+                    request.session["user_type"] = response["user_type"]
+                    request.session["first_name"] = response["first_name"]
+                    request.session["last_name"] = response["last_name"]
+                    request.session["photo_b64"] = response["photo_b64"]
+                    request.session["email"] = response["email"]
+                    return redirect("/general_statistics")
 
             # 404 - invalid login
-        else:
-            print(form.errors)
+            else:
+                return render(request, "login.html", {"form": form})
+
     return render(request, "login.html", {"form":form})
 
 
@@ -718,9 +745,9 @@ def logout_view(request):
 
 def reload_database(request):
 
-    result = requests.get(API_URL + "reload_database", headers={'Authorization': 'Token ' + request.session["user_token"]})
+    result = requests.get(API_URL + "reload_database")
     if result.status_code == status.HTTP_200_OK:
-        return redirect("/general_statistics")
+        return redirect("login")
     else:
         return redirect("login")
 

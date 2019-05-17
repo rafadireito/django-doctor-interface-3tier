@@ -158,5 +158,6 @@ class RemoveGesture(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="Username")
-    password = forms.CharField( widget=forms.PasswordInput, label="Password")
+    username = forms.CharField(label="Username", required=False)
+    password = forms.CharField( widget=forms.PasswordInput, label="Password", required=False)
+    cc_btn = forms.CharField(required=False)

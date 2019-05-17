@@ -31,6 +31,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('login', views.login),
+    # new
+    path('login_cc', views.login_cc),
     path('logout', views.logout),
 
     path('all_people', views.get_all_people),
