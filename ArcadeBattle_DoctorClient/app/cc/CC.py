@@ -28,7 +28,7 @@ class CC:
             self.public_key  = self.session.findObjects([(PyKCS11.CKA_CLASS, PyKCS11.CKO_PUBLIC_KEY), (PyKCS11.CKA_LABEL, 'CITIZEN AUTHENTICATION KEY')])[0]
         except:
             print("Check if card reader and card are well connected.")
-            sys.exit(1)
+            #sys.exit(1)
 
 cc_data = CC()
 
