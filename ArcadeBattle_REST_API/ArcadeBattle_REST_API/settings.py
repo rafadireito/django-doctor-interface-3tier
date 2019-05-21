@@ -26,7 +26,8 @@ SECRET_KEY = '**i2^hdpsshr1zp)v4+4xjzt#!gl8&drxgi9$jb#e_esjjm@nf'
 DEBUG = True
 
 ALLOWED_HOSTS = ['tmserver.ieeta.pt',
-                 'localhost']
+                 'localhost',
+                 '127.0.0.1']
 
 
 # Application definition

@@ -384,7 +384,7 @@ def get_gestures(request, username):
 
 @csrf_exempt
 @api_view(["GET"])
-def get_games_played(request, username):
+def get_games_played(request):
     try:
         data = queries.get_games_played()
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
