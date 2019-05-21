@@ -386,7 +386,7 @@ def get_gestures(request, username):
 @api_view(["GET"])
 def get_games_played(request, username):
     try:
-        data = queries.get_games_played(username)
+        data = queries.get_games_played()
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
