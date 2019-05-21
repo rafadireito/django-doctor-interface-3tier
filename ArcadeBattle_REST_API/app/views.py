@@ -384,12 +384,34 @@ def get_gestures(request, username):
 
 @csrf_exempt
 @api_view(["GET"])
-def get_games_played(request):
+def get_games_played(request, username):
     try:
-        data = queries.get_games_played()
+        data = queries.get_games_played(username)
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_highscores(request, username):
+    try:
+
+        data = queries.get_patient_highscores(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_gesture_difficulties(request, username):
+    try:
+
+        data = queries.get_patient_gesture_difficulties(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
 
 @csrf_exempt
 @api_view(["GET"])

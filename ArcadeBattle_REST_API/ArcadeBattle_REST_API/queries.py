@@ -582,6 +582,54 @@ def get_games_played():
     return dic
 
 
+
+def get_patient_highscores(username):
+
+    # get patient
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+
+    gestures_pat = [gest for gest in Gesture.objects.filter(patient=pat)]
+
+
+    games_played = []
+    for gest in gestures_pat:
+        games_played += list(GamePlayed.objects.filter(gesture=gest))
+
+
+    dic ={}
+    for gp in games_played:
+        print(gp)
+        print(gp.game.name)
+        if gp.game.name not in dic:
+            dic[gp.game.name] = gp.points
+        elif gp.game.name in dic and gp.points > dic[gp.game.name] :
+            dic[gp.game.name] = gp.points
+
+    print(dic)
+    return dic
+
+
+
+
+def get_patient_gesture_difficulties(username):
+
+    # get patient
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+
+    gestures_pat = [gest for gest in Gesture.objects.filter(patient=pat)]
+
+    dic ={}
+    for g in gestures_pat:
+        dic[g.name] = g.patient_difficulty
+
+    return dic
+
+
+
 def send_email_pw(email):
 
     letters = string.ascii_lowercase

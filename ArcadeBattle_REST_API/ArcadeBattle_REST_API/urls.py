@@ -54,6 +54,11 @@ urlpatterns = [
     url('^gestures_by_game/(?P<username>.+)', views.gestures_by_game),
     url('^games_played_by_user/(?P<username>.+)', views.games_played_by_user),
 
+    # new .......
+    url('^patient_games_highscores/(?P<username>.+)', views.get_patient_highscores),
+    url('^patient_gesture_difficulties/(?P<username>.+)', views.get_patient_gesture_difficulties),
+    #...........
+
     # keep order
     url('^patient_gestures/(?P<username>.+)/(?P<data_for>.+)', views.get_patient_gestures),
     url('^patient_gestures/(?P<username>.+)', views.get_patient_gestures),

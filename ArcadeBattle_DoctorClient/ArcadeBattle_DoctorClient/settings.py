@@ -127,4 +127,5 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = "/"
 
 # for using the api
-API_URL = 'http://127.0.0.1:9000/'
+#API_URL = 'http://127.0.0.1:9000/'
+API_URL = 'http://tmserver.ieeta.pt:8117/'
