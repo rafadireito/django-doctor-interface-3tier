@@ -207,11 +207,6 @@ def my_patients(request):
 
 @csrf_exempt
 def patient_statistics(request):
-    '''
-    if not request.user.is_authenticated or (
-            request.user.username != "admin" and request.user.groups.all()[0].name not in ["doctors_group", "admins_group"]):
-        return redirect("login")
-    '''
 
     username = request.GET['email']
 
@@ -305,7 +300,43 @@ def patient_statistics(request):
 
         # -------- ADD GESTURE FORM -------- #
         elif request.method == 'POST' and "notes" not in request.POST:
-            print("no")
+            print("Adding new gesture")
+            form = AddGesture(request.POST, request.FILES)
+            if form.is_valid():
+
+                data["username"] = username
+                data["gesture_name"]= form.cleaned_data["name"]
+                data["gesture_img"] = form.cleaned_data["gesture_image"]
+                data["repetitions"] = form.cleaned_data["repetitions"]
+                data["default_difficulty"] = form.cleaned_data["default_difficulty"]
+                data["decision_tree"] = form.cleaned_data["decision_tree"]
+
+                result = requests.post(API_URL + "add_gesture", data=data,
+                                       headers={'Authorization': 'Token ' + request.session["user_token"]})
+
+                if result.status_code == status.HTTP_200_OK:
+                    data = result.json()
+                    request.session["user_type"] = data["user_type"]
+
+                    result = requests.get(API_URL + "gestures/" + username,
+                                          headers={'Authorization': 'Token ' + request.session["user_token"]})
+
+                    if result.status_code == status.HTTP_200_OK:
+                        data = result.json()
+                        patient_gestures = data["data"]
+                    else:
+                        # if user is not an admin nor a doctor or isnt authenticated-> login
+                        return redirect("login")
+
+                else:
+                    # if user is not an admin nor a doctor or isnt authenticated-> login
+                    return redirect("login")
+
+
+                return render(request, "patient_statistics.html",
+                              {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
+                               "patient": p1, "patient_gestures": patient_gestures,
+                               "gestures_dict": gestures_dict, "games_quant": games_quant})
             '''
             form = AddGesture(request.POST, request.FILES)
             if form.is_valid():

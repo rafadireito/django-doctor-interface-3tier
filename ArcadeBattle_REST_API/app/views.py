@@ -48,14 +48,12 @@ def validation(certificate, signature):
 
 
 def get_user_type(username, request=None):
-    print(username)
 
     if username == None:
         token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]
         user_id = Token.objects.get(key=token).user_id
         username = User.objects.get(id=user_id).username;
 
-    print(User.objects.get(username=username).groups.all())
 
     if username == "admin" or User.objects.get(username=username).groups.all()[0].name  in ["admins_group"]:
         return 'admin'
@@ -127,7 +125,6 @@ def login(request):
     username = request.data.get("username")
     password = request.data.get("password")
     if username is None or password is None:
-        print("here")
 
         return Response({'error': 'Please provide both username and password'}, status=HTTP_400_BAD_REQUEST)
 
@@ -159,7 +156,6 @@ def login(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def login_cc(request):
-    print("LOGIN WITH CC \n\n\n")
     certificate = request.data.get("certificate")
     signature = request.data.get("signature")
 
@@ -176,9 +172,7 @@ def login_cc(request):
 
         # check if the login is valid
         if valid:
-            print(cc_number)
             user = queries.get_user_by_cc_number(cc_number)
-            print(user)
 
             if not user:
                 return Response({'error': 'Invalid Credentials'}, status=HTTP_404_NOT_FOUND)
@@ -198,7 +192,7 @@ def login_cc(request):
 
             # Logs
             logging.info(" User: " + user.username + " has logged in with auth_token: " + token.key)
-            print("LOGIN WITH CC \n\n\n")
+
 
             return Response(data, status=HTTP_200_OK)
 
@@ -266,7 +260,7 @@ def get_all_games(request):
 @api_view(["GET"])
 def my_patients(request, username):
     if verify_authorization(request, "doctor"):
-        print(username)
+
         patients_data = queries.get_patients(username)
         return Response({"user_type": get_user_type(None,request), "data":patients_data}, status=HTTP_200_OK)
     return Response(status=HTTP_403_FORBIDDEN)
@@ -286,10 +280,8 @@ def delete_user(request, username):
         else:
             return Response(status=HTTP_403_FORBIDDEN)
 
-        print("HELLO!")
 
         # update lists
-        print(user_type)
         if user_type == "admin":
             return Response({"user_type": get_user_type(None, request), "data": queries.all_admins()}, status=HTTP_200_OK)
         elif user_type == "doctor":
@@ -310,6 +302,7 @@ def delete_gesture(request, username, gesture_name):
         # admins and doctors can delete gestures
         if (verify_authorization(request, "admin") or verify_authorization(request, "doctor")) and user_type == "patient":
             queries.delete_gesture(username, gesture_name)
+            print("Gesture Deleted")
         else:
             return Response(status=HTTP_403_FORBIDDEN)
 
@@ -433,6 +426,17 @@ def add_game_played(request):
     except:
         return Response(status=HTTP_400_BAD_REQUEST)
 
+@csrf_exempt
+@api_view(["POST"])
+def add_gesture(request):
+    try:
+        queries.add_gesture(request.data)
+
+        return Response({"user_type": get_user_type(None, request), "data": {}}, status=HTTP_200_OK)
+
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+
 
 @csrf_exempt
 @api_view(["GET"])
@@ -447,7 +451,6 @@ def games_played_by_user(request, username):
 @csrf_exempt
 @api_view(["GET"])
 def get_patient_gestures(request, username, data_for=''):
-    print(username)
     try:
         data = queries.get_gestures(username, data_for)
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
@@ -459,7 +462,6 @@ def get_patient_gestures(request, username, data_for=''):
 @csrf_exempt
 @api_view(["GET"])
 def patient_games_scores(request, username, data_for=''):
-    print(username)
     try:
         data = queries.patient_games_scores(username, data_for)
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
