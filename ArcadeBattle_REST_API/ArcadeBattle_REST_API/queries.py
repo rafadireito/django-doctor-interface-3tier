@@ -543,6 +543,9 @@ def add_game_played(data):
     try:
         gp = GamePlayed.objects.create(gesture=gest, game=game, points=points, average_difficulty=avg_difficulty, date=date,
                                    repetitions=repetitions, bad_gestures=bad_gestures)
+
+        Gesture.objects.filter(patient=pat, name=gesture_name,).update(patient_difficulty=average_difficulty)
+
     except Exception as e:
         print(e)
 
