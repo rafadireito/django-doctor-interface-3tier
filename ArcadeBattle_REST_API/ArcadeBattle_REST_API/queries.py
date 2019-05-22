@@ -522,6 +522,7 @@ def patient_games_scores(username, data_for):
 
 def add_game_played(data):
 
+
     username = data.get("username")
     game_name = data.get("game_name")
     gesture_name = data.get("gesture_name")
@@ -540,11 +541,12 @@ def add_game_played(data):
     gest = Gesture.objects.get(patient=pat, name=gesture_name,)
 
     game = Game.objects.get(name=game_name)
+
     try:
         gp = GamePlayed.objects.create(gesture=gest, game=game, points=points, average_difficulty=avg_difficulty, date=date,
                                    repetitions=repetitions, bad_gestures=bad_gestures)
 
-        Gesture.objects.filter(patient=pat, name=gesture_name,).update(patient_difficulty=average_difficulty)
+        Gesture.objects.filter(patient=pat, name=gesture_name,).update(patient_difficulty=avg_difficulty)
 
     except Exception as e:
         print(e)

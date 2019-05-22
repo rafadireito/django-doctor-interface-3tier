@@ -273,7 +273,7 @@
         var testing_set  = hand_data.slice(Math.round(hand_data.length*0.8), hand_data.length);
         var config = {trainingSet: training_set, categoryAttr: "classification"};
         decision_trees[decision_tree_index] = new dt.DecisionTree(config);
-        decision_trees[decision_tree_index].gesture_name = gesture_name;
+        decision_trees[decision_tree_index].gesture_name = $("id_name").val();
         var counter = 0;
         for (var i = 0; i < testing_set.length; i++) {
             var test_case = JSON.parse(JSON.stringify(testing_set[i]));
