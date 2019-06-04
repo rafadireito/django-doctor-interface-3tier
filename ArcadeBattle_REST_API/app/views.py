@@ -300,6 +300,8 @@ def delete_gesture(request, username, gesture_name):
     try:
         user_type = get_user_type(username)
         # admins and doctors can delete gestures
+        print(verify_authorization(request, "admin"))
+        print(verify_authorization(request, "doctor"))
         if (verify_authorization(request, "admin") or verify_authorization(request, "doctor")) and user_type == "patient":
             queries.delete_gesture(username, gesture_name)
             print("Gesture Deleted")
@@ -433,6 +435,17 @@ def gestures_by_game(request, username):
 def update_notes(request):
     try:
         queries.update_notes(request.data)
+        profile = queries.user_profile(request.data["username"])
+        return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
+
+@csrf_exempt
+@api_view(["POST"])
+def update_patient_notes(request):
+    try:
+        queries.update_patient_notes(request.data)
         profile = queries.user_profile(request.data["username"])
         return Response({"user_type": get_user_type(None, request), "data": profile}, status=HTTP_200_OK)
     except:

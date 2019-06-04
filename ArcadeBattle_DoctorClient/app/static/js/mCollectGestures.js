@@ -99,10 +99,38 @@
                             max_value = key;
                     }
 
-                    if (max_value == "None"){
+                    if (max_value == "None")
+                    {
+                        // get data
+                        var height = document.getElementById("gestureImg").style.height;
+                        var width = document.getElementById("gestureImg").style.width;
+
+                        //update size and color of the layer
+                        document.getElementById("gestureColorLayer").style.height = height + 'px';
+                        document.getElementById("gestureColorLayer").style.width = width + 'px';
+                        document.getElementById("gestureColorLayer").style.backgroundColor = 'rgba(255, 51, 51, 0.1)';
+                        document.getElementById("gestureColorLayer").style.borderStyle = 'solid';
+                        document.getElementById("gestureColorLayer").style.borderWidth = '5px';
+                        document.getElementById("gestureColorLayer").style.borderColor = '#b30000';
+
                         document.getElementById("labelTestGesture").value = "Incorrect"
-                    }else{
+                    }
+                    else
+                    {
+                        // get data
+                        var height = document.getElementById("gestureImg").style.height;
+                        var width = document.getElementById("gestureImg").style.width;
+
+                        //update size and color of the layer
+                        document.getElementById("gestureColorLayer").style.height = height + 'px';
+                        document.getElementById("gestureColorLayer").style.width = width + 'px';
+                        document.getElementById("gestureColorLayer").style.backgroundColor = 'rgba(135, 211, 124, 0.1)';
+                        document.getElementById("gestureColorLayer").style.borderStyle = 'solid';
+                        document.getElementById("gestureColorLayer").style.borderWidth = '5px';
+                        document.getElementById("gestureColorLayer").style.borderColor = '#008000';
+
                         document.getElementById("labelTestGesture").value = "Correct"
+
                     }
                     //document.getElementById("gesture_name").innerHTML = max_value;
                     predictions = [];
@@ -147,6 +175,18 @@
 
     function stopTesting() {
         document.getElementById("labelTestGesture").value = ""
+
+        // get data
+        var height = document.getElementById("gestureImg").style.height;
+        var width = document.getElementById("gestureImg").style.width;
+
+        //update size and color of the layer
+        document.getElementById("gestureColorLayer").style.height = height + 'px';
+        document.getElementById("gestureColorLayer").style.width = width + 'px';
+        document.getElementById("gestureColorLayer").style.backgroundColor = 'rgba(0, 0, 0, 0)';
+        document.getElementById("gestureColorLayer").style.borderStyle = 'solid';
+        document.getElementById("gestureColorLayer").style.borderWidth = '0px';
+
         paused = true;
     }
 
@@ -158,7 +198,7 @@
 
     var frame_count = 0;
     function draw() {
-        background("#d6e6f2");
+        background("#F0F0F0");
         //if (frame_count % 5 != 0)
         //    return;
         frame_count = 0;
@@ -313,8 +353,41 @@
             else {
 
                 var percentage = hand_data.length / 5;
+                var correct_rgb = {'r':239, 'g':239, 'b':239};
 
-                if (percentage >= 80 && percentage <= 90) {
+                 var blockSize = 5, // only visit every 5 pixels
+                    context = canvas.getContext && canvas.getContext('2d'),
+                    data, width, height,
+                    i = -4,
+                    length,
+                    rgb = {r:0,g:0,b:0},
+                    count = 0;
+
+
+                height = canvas.height;
+                width = canvas.width;
+
+
+                data = context.getImageData(0, 0, width, height);
+
+
+                length = data.data.length;
+
+                while ( (i += blockSize * 4) < length ) {
+                    ++count;
+                    rgb.r += data.data[i];
+                    rgb.g += data.data[i+1];
+                    rgb.b += data.data[i+2];
+                }
+
+                // ~~ used to floor values
+                rgb.r = ~~(rgb.r/count);
+                rgb.g = ~~(rgb.g/count);
+                rgb.b = ~~(rgb.b/count);
+
+
+                if (hand_position_image_b64 === undefined && percentage >= 50 && percentage <= 90 && !((rgb.r==239 && rgb.g==239 && rgb.b==239) || (rgb.r==240 && rgb.g==240 && rgb.b==240)) )
+                {
                     hand_position_image_b64 = canvas.toDataURL("image/jpeg");
                 }
 

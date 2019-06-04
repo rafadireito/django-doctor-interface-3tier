@@ -30,7 +30,8 @@ class Doctor(models.Model):
 class Patient(models.Model):
     person = models.OneToOneField(Person, on_delete=models.CASCADE, unique=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, default=None)
-    notes = models.TextField()
+    notes = models.TextField(default="empty")
+    patient_notes = models.TextField(default="empty")
 
     def __str__(self):
         return self.person.user.first_name + " " + self.person.user.last_name

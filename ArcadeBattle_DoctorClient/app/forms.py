@@ -152,7 +152,7 @@ class AddGame(forms.Form):
     photo = forms.FileField(label="Photo", widget=forms.FileInput(attrs={'onchange': 'readFile(this)'}))
 
 
-class UpdateNotes(forms.Form):
+class UpdateNotesDoctor(forms.Form):
     def __init__(self, patient, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
         if patient != None:
@@ -163,6 +163,17 @@ class UpdateNotes(forms.Form):
 
     notes = forms.CharField(help_text="Write your notes here", widget=forms.Textarea(attrs={"rows" : "12", "cols" : "50"}))
 
+
+class UpdateNotesPatient(forms.Form):
+    def __init__(self, patient, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+        if patient != None:
+            for field_name, field in self.fields.items():
+                field.widget.attrs['placeholder'] = field.help_text
+                field.widget.attrs['class'] = 'form-control'
+                field.initial = patient["patient_notes"]
+
+    patient_notes = forms.CharField(help_text="Write your notes here", widget=forms.Textarea(attrs={"rows" : "12", "cols" : "50"}))
 
 class RemoveUser(forms.Form):
     first_name = forms.CharField(label="First Name")

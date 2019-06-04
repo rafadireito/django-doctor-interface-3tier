@@ -13,8 +13,9 @@ import random
 import string
 from django.conf import settings
 from ArcadeBattle_DoctorClient.settings import API_URL
-from app.forms import AddPatient, AddAdmin, AddDoctor, AddGesture, UpdateProfile, AddGame, UpdateNotes, RemoveUser, \
-    RemoveGesture, LoginForm
+from app.forms import AddPatient, AddAdmin, AddDoctor, AddGesture, UpdateProfile, AddGame, UpdateNotesDoctor, \
+    RemoveUser, \
+    RemoveGesture, LoginForm, UpdateNotesPatient
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
@@ -262,13 +263,15 @@ def patient_statistics(request):
     games_quant[0] = [key for key in game_gesture_stats]
     games_quant[1] = [len(game_gesture_stats[key]) for key in game_gesture_stats]
 
-    notes_form = UpdateNotes(p1)
+    notes_form_doctor = UpdateNotesDoctor(p1)
+    notes_form_patient = UpdateNotesPatient(p1)
     add_gesture_form = AddGesture()
     remove_gesture_form = RemoveGesture()
 
 
     if request.method == 'POST':
 
+        print(request.POST)
         # -------- DELETE GESTURE FORM -------- #
         if  ("gesture_name"  in request.POST)  and ("user_email" in request.POST):
 
@@ -291,7 +294,7 @@ def patient_statistics(request):
                     return redirect("login")
 
                 return render(request, "patient_statistics.html",
-                              {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
+                              {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p1, "patient_gestures": patient_gestures,
                                "gestures_dict": gestures_dict, "games_quant":games_quant})
             else:
@@ -299,7 +302,7 @@ def patient_statistics(request):
 
 
         # -------- ADD GESTURE FORM -------- #
-        elif request.method == 'POST' and "notes" not in request.POST:
+        elif request.method == 'POST' and not ("notes" in request.POST or "patient_notes" in request.POST):
             print("Adding new gesture")
             form = AddGesture(request.POST, request.FILES)
             if form.is_valid():
@@ -334,7 +337,7 @@ def patient_statistics(request):
 
 
                 return render(request, "patient_statistics.html",
-                              {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
+                              {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p1, "patient_gestures": patient_gestures,
                                "gestures_dict": gestures_dict, "games_quant": games_quant})
             '''
@@ -354,7 +357,7 @@ def patient_statistics(request):
                     gestures_dict[str(g.id)] = [g.name, g.patient_difficulty, g.default_difficulty]
 
                 return render(request, "patient_statistics.html",
-                              {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
+                              {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p, "patient_gestures": patient_gestures,
                                "gestures_dict": gestures_dict, "games_quant":games_quant})
             else:
@@ -363,31 +366,64 @@ def patient_statistics(request):
 
         # -------- NOTES FORM -------- #
         else:
-            form = UpdateNotes(None, request.POST, request.FILES)
-            if form.is_valid():
-                #get data from form
-                data["username"] = username
-                data["notes"] = form.cleaned_data["notes"]
+            # Doctor notes
+            if request.method == 'POST' and "notes" in request.POST:
 
-                result = requests.post(API_URL + "update_notes", data=data, headers={'Authorization': 'Token ' + request.session["user_token"]})
-                if result.status_code == status.HTTP_200_OK:
-                    data = result.json()
-                    request.session["user_type"] = data["user_type"]
-                    p1 = data["data"]
+                print("notes_doctor")
+                form = UpdateNotesDoctor(None, request.POST, request.FILES)
+                if form.is_valid():
+                    #get data from form
+                    data["username"] = username
+                    data["notes"] = form.cleaned_data["notes"]
+
+                    result = requests.post(API_URL + "update_notes", data=data, headers={'Authorization': 'Token ' + request.session["user_token"]})
+                    if result.status_code == status.HTTP_200_OK:
+                        data = result.json()
+                        request.session["user_type"] = data["user_type"]
+                        p1 = data["data"]
+                    else:
+                        # if user is not an admin nor a doctor or isnt authenticated-> login
+                        return redirect("login")
+
+                    notes_form_doctor = UpdateNotesDoctor(p1)
+                    return render(request, "patient_statistics.html",
+                                  {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
+                                   "patient": p1, "patient_gestures": patient_gestures,
+                                   "gestures_dict": gestures_dict, "games_quant":games_quant})
                 else:
-                    # if user is not an admin nor a doctor or isnt authenticated-> login
-                    return redirect("login")
+                    print("Invalid form")
 
-                notes_form = UpdateNotes(p1)
-                return render(request, "patient_statistics.html",
-                              {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
-                               "patient": p1, "patient_gestures": patient_gestures,
-                               "gestures_dict": gestures_dict, "games_quant":games_quant})
-            else:
-                print("Invalid form")
+            # Patient notes
+            elif request.method == 'POST' and "patient_notes" in request.POST:
+
+                print("notes_patient")
+                form = UpdateNotesPatient(None, request.POST, request.FILES)
+                if form.is_valid():
+                    # get data from form
+                    data["username"] = username
+                    data["notes"] = form.cleaned_data["patient_notes"]
+
+                    result = requests.post(API_URL + "update_patient_notes", data=data,
+                                           headers={'Authorization': 'Token ' + request.session["user_token"]})
+                    if result.status_code == status.HTTP_200_OK:
+                        data = result.json()
+                        request.session["user_type"] = data["user_type"]
+                        p1 = data["data"]
+                    else:
+                        # if user is not an admin nor a doctor or isnt authenticated-> login
+                        return redirect("login")
+
+                    notes_form_patient = UpdateNotesPatient(p1)
+                    return render(request, "patient_statistics.html",
+                                  {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient,
+                                   "gesture_form": remove_gesture_form,
+                                   "patient": p1, "patient_gestures": patient_gestures,
+                                   "gestures_dict": gestures_dict, "games_quant": games_quant})
+                else:
+                    print("Invalid form")
 
     return render(request, "patient_statistics.html",
-                  {"form": add_gesture_form, "form_notes": notes_form, "gesture_form": remove_gesture_form,
+                  {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                    "patient": p1, "patient_gestures": patient_gestures, "gestures_dict": gestures_dict, "games_quant":games_quant})
 
 
@@ -474,6 +510,7 @@ def general_statistics(request):
         data = result.json()
         print(data)
         user_profile = data["data"]
+        print(user_profile)
 
         request.session["user_type"] = data["user_type"]
         request.session["first_name"] = user_profile["first_name"]

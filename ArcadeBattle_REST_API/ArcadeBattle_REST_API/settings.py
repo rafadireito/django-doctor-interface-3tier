@@ -27,7 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['tmserver.ieeta.pt',
                  'localhost',
-                 '127.0.0.1']
+                 '127.0.0.1',
+                 '0.0.0.0',
+                 '192.168.46.28',
+                 '192.168.63.236']
 
 
 # Application definition
@@ -146,6 +149,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Connect to external database
+'''
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -156,7 +160,7 @@ DATABASES = {
             'PORT': "3306",
         }
     }
-
+'''
 
 # For dealing with CORS (Cross Origin  Resource Sharing)
 CORS_ORIGIN_ALLOW_ALL = True

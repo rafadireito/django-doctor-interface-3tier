@@ -78,6 +78,7 @@ urlpatterns = [
     path('new_game', views.new_game),
     path('update_profile', views.update_profile),
     path('update_notes', views.update_notes),
+    path('update_patient_notes', views.update_patient_notes),
     path('add_game_played', views.add_game_played),
     path('add_gesture', views.add_gesture),
 

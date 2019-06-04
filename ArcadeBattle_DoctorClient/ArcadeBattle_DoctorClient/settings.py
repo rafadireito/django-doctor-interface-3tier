@@ -28,7 +28,7 @@ SECRET_KEY = '(k12o97nn@xw(!m2wm2s**tx^(-c-xo)b0bgbvn99+tl7n45%)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.63.236']
 
 
 # Application definition
@@ -127,6 +127,6 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = "/"
 
 # for using the api
-API_URL = 'http://127.0.0.1:9000/'
+API_URL = 'http://localhost:9000/'
 
 #API_URL = 'http://tmserver.ieeta.pt:8117/'
