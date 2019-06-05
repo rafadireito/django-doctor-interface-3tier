@@ -121,6 +121,8 @@ def get_patients(doctor=""):
         dic["birth_date"] = p.person.birth_date.__str__()
         patients_data.append(dic)
 
+        print(dic["patient_notes"])
+
     return patients_data
 
 
