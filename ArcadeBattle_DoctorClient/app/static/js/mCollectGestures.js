@@ -25,6 +25,22 @@
     // to use HMD mode:
     controllerOptions.optimizeHMD = true;
 
+    Function.prototype.toJSON = function() {
+        console.log("Serialization!!!");
+          var parts = this
+              .toString()
+              .match(/^\s*function[^(]*\(([^)]*)\)\s*{(.*)}\s*$/)
+          ;
+          if (parts == null)
+              throw 'Function form not supported';
+
+          return [
+              'window.Function',
+              parts[1].trim().split(/\s*,\s*/),
+              parts[2]
+          ];
+        };
+
     Leap.loop(controllerOptions, function(frame) {
         if (paused) {
             return; // Skip this update
