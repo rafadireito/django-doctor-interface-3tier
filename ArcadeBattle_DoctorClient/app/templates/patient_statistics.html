@@ -15,6 +15,7 @@
 
         var gesturesChart = null;
         var topGamesChart = null;
+        var gestureCorrectIncorrectChart = null;
         window.onload = function(){
 
             var slider = document.getElementById("myRange").firstChild.nextSibling;
@@ -70,10 +71,66 @@
                 }
 
             //bar chart
-            var ctx2 = document.getElementById("gesturesChart");
+            var ctx2 = document.getElementById("gestureCorrectIncorrectChart");
             if (ctx2) {
               ctx2.height = 150;
-              gesturesChart = new Chart(ctx2, {
+              gestureCorrectIncorrectChart = new Chart(ctx2, {
+                type: 'bar',
+                defaultFontFamily: 'Poppins',
+                data: {
+                  labels: [],
+                  datasets: [
+                    {
+                      label: "Correct Gestures",
+                      data: [],
+                      borderColor: "rgba(0, 128, 0, 0.9)",
+                      borderWidth: "0",
+                      backgroundColor: "rgba(0, 128, 0, 0.5)",
+                      fontFamily: "Poppins"
+                    },
+                    {
+                      label: "Inorrect Gestures",
+                      data: [],
+                      borderColor: "rgba(178,34,34,0.95)",
+                      borderWidth: "0",
+                      backgroundColor: "rgba(178,34,34,0.85)",
+                      fontFamily: "Poppins"
+                    }
+                  ]
+                },
+                options: {
+                  legend: {
+                    position: 'top',
+                    labels: {
+                      fontFamily: 'Poppins'
+                    }
+
+                  },
+                  scales: {
+                    xAxes: [{
+                      ticks: {
+                        fontFamily: "Poppins"
+
+                      }
+                    }],
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true,
+                        fontFamily: "Poppins"
+                      }
+                    }]
+                  }
+                }
+              });
+            }
+
+
+
+            //bar chart
+            var ctx3 = document.getElementById("gesturesChart");
+            if (ctx3) {
+              ctx3.height = 150;
+              gesturesChart = new Chart(ctx3, {
                 type: 'bar',
                 defaultFontFamily: 'Poppins',
                 data: {
@@ -134,6 +191,7 @@
 
         function getData() {
             gestureJSON = JSON.parse(document.getElementById("gestureChart_dict").innerHTML.replaceAll('\'', '\"'))
+            correctIncorrectGestureJSON = JSON.parse(document.getElementById("gestureCorrectIncorrect").innerHTML.replaceAll('\'', '\"'))
 
             topGamesChart.data.labels = [];
             topGamesChart.data.datasets[0].data=[];
@@ -143,10 +201,25 @@
             topGamesChart.data.datasets[0].data = {{ games_quant.1|safe }} ; //[22,16,30,9];
             topGamesChart.update();
 
+
+
+
+
+
             Object.keys(gestureJSON).forEach(function(id) {
                 gesturesChart.data.labels.push(gestureJSON[id][0])
                 gesturesChart.data.datasets[0].data.push(gestureJSON[id][2])
                 gesturesChart.data.datasets[1].data.push(gestureJSON[id][1])
+            });
+
+            gesturesChart.update();
+
+
+            //
+            Object.keys(correctIncorrectGestureJSON).forEach(function(id) {
+                gestureCorrectIncorrectChart.data.labels.push(correctIncorrectGestureJSON[id][0])
+                gestureCorrectIncorrectChart.data.datasets[0].data.push(correctIncorrectGestureJSON[id][1])
+                gestureCorrectIncorrectChart.data.datasets[1].data.push(correctIncorrectGestureJSON[id][2])
             });
 
             gesturesChart.update();
@@ -575,7 +648,18 @@
                                             <div class="au-card m-b-30">
                                                 <div class="au-card-inner">
                                                     <h3 class="title-2 m-b-40">Games Played</h3>
+                                                    <canvas id="gestureCorrectIncorrectChart"></canvas>
+                                                    <h1 style="display:none" id="gestureCorrectIncorrect">{{ correct_incorrect_gestures_dict }}</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="au-card m-b-30">
+                                                <div class="au-card-inner">
+                                                    <h3 class="title-2 m-b-40">Games Played</h3>
                                                     <canvas id="topGamesChart"></canvas>
+
+                                                    <h1 style="display:none" id="gestureChart_dict">{{ gestures_dict }}</h1>
                                                 </div>
                                             </div>
                                         </div>
@@ -584,7 +668,7 @@
                                                 <div class="au-card-inner">
                                                     <h3 class="title-2 m-b-40">Gestures Difficulty</h3>
                                                     <canvas id="gesturesChart"></canvas>
-                                                    <h1 style="display:none" id="gestureChart_dict">{{ gestures_dict }}</h1>
+
                                                 </div>
                                             </div>
                                         </div>

@@ -70,7 +70,7 @@ class GamePlayed(models.Model):
     average_difficulty = models.IntegerField()
     date = models.DateField()
     repetitions = models.IntegerField(default=0)
-    bad_gestures = models.IntegerField(default=1)
+    bad_gestures = models.IntegerField(default=0)
 
     def __str__(self):
         return self.gesture.name + ", " + self.game.name

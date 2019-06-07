@@ -247,6 +247,32 @@ def patient_statistics(request):
     for g in patient_gestures:
         gestures_dict[str(g["id"])] = [g["name"], g["patient_difficulty"], g["default_difficulty"]]
 
+    print(gestures_dict)
+
+
+
+    #-----------
+    # get gestures from the api
+    result = requests.get(API_URL + "get_patient_gestures_score/" + username, headers={'Authorization': 'Token ' + request.session["user_token"]})
+
+    if result.status_code == status.HTTP_200_OK:
+        data = result.json()
+        request.session["user_type"] = data["user_type"]
+        correct_incorrect_patient_gestures = data["data"]
+    else:
+        # if user is not an admin nor a doctor or isnt authenticated-> login
+        return redirect("login")
+
+    # update dic with data from the api
+    correct_incorrect_gestures_dict = {}
+    for k in correct_incorrect_patient_gestures:
+        value = correct_incorrect_patient_gestures[k]
+        correct_incorrect_gestures_dict[k] = [k, value["correct"], value["incorrect"]]
+    #-----------
+
+
+
+
     # get gestures from the api
     result = requests.get(API_URL + "games_played_by_user/" + username, headers={'Authorization': 'Token ' + request.session["user_token"]})
 
@@ -296,7 +322,7 @@ def patient_statistics(request):
                 return render(request, "patient_statistics.html",
                               {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p1, "patient_gestures": patient_gestures,
-                               "gestures_dict": gestures_dict, "games_quant":games_quant})
+                               "gestures_dict": gestures_dict, "games_quant":games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
             else:
                 print("Invalid Form")
 
@@ -339,7 +365,7 @@ def patient_statistics(request):
                 return render(request, "patient_statistics.html",
                               {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p1, "patient_gestures": patient_gestures,
-                               "gestures_dict": gestures_dict, "games_quant": games_quant})
+                               "gestures_dict": gestures_dict, "games_quant": games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
             '''
             form = AddGesture(request.POST, request.FILES)
             if form.is_valid():
@@ -359,7 +385,7 @@ def patient_statistics(request):
                 return render(request, "patient_statistics.html",
                               {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                "patient": p, "patient_gestures": patient_gestures,
-                               "gestures_dict": gestures_dict, "games_quant":games_quant})
+                               "gestures_dict": gestures_dict, "games_quant":games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
             else:
                 print("Invalid form")
             '''
@@ -389,7 +415,7 @@ def patient_statistics(request):
                     return render(request, "patient_statistics.html",
                                   {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
                                    "patient": p1, "patient_gestures": patient_gestures,
-                                   "gestures_dict": gestures_dict, "games_quant":games_quant})
+                                   "gestures_dict": gestures_dict, "games_quant":games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
                 else:
                     print("Invalid form")
 
@@ -418,13 +444,13 @@ def patient_statistics(request):
                                   {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient,
                                    "gesture_form": remove_gesture_form,
                                    "patient": p1, "patient_gestures": patient_gestures,
-                                   "gestures_dict": gestures_dict, "games_quant": games_quant})
+                                   "gestures_dict": gestures_dict, "games_quant": games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
                 else:
                     print("Invalid form")
 
     return render(request, "patient_statistics.html",
                   {"form": add_gesture_form, "form_notes": notes_form_doctor, "form_notes_patient": notes_form_patient, "gesture_form": remove_gesture_form,
-                   "patient": p1, "patient_gestures": patient_gestures, "gestures_dict": gestures_dict, "games_quant":games_quant})
+                   "patient": p1, "patient_gestures": patient_gestures, "gestures_dict": gestures_dict, "games_quant":games_quant, "correct_incorrect_gestures_dict": correct_incorrect_gestures_dict})
 
 
 

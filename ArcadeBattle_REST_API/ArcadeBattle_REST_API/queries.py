@@ -210,25 +210,36 @@ def update_patient_notes(data):
 
 def update_profile(username, user_type, data):
     try:
-        first_name = data.get("first_name")
-        last_name = data.get("last_name")
-        contact = data.get("contact")
-        birth_date = data.get("birth_date")
-        nif = data.get("nif")
 
-        # get user and udate it
+        # get user
         u = User.objects.filter(username=username)
-        u.update(first_name=first_name, last_name=last_name)
+        p = Person.objects.filter(user=u[0])
+
+        if "first_name" in data:
+            first_name = data.get("first_name")
+            u.update(first_name=first_name)
+
+        if "last_name" in data:
+            last_name = data.get("last_name")
+            u.update(last_name=last_name)
+
+        if "contact" in data:
+            contact = data.get("contact")
+            p.update(user=u[0], contact=contact)
+
+        if "birth_date" in data:
+            birth_date = data.get("birth_date")
+            p.update(user=u[0], birth_date=birth_date)
+
+        if "nif" in data:
+            nif = data.get("nif")
+            p.update(user=u[0], nif=nif)
 
         # update password, if needed
         if 'password' in data:
             password = data.get("password")
             u.set_password(password)
             u.save()
-
-        # get user and udate it
-        p = Person.objects.filter(user=u[0])
-        p.update(user=u[0], contact=contact, nif=nif, birth_date=birth_date)
 
         if 'photo_b64' in data:
             photo_b64 = data.get("photo_b64")
@@ -648,6 +659,58 @@ def get_patient_gesture_difficulties(username):
     return dic
 
 
+def get_patient_gestures_score(username):
+
+    # get patient
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+
+    gestures_pat = [gest for gest in Gesture.objects.filter(patient=pat)]
+
+    dic ={}
+    for gest in gestures_pat:
+        good = 0
+        bad = 0
+        # search on every game played
+        for game_played in GamePlayed.objects.all():
+            if game_played.gesture == gest :
+                good += (game_played.repetitions - game_played.bad_gestures)
+                bad += game_played.bad_gestures
+
+
+        dic[gest.name] = {'correct':good, 'incorrect':bad}
+
+    return dic
+
+
+def get_patient_gesture_score_dates(username, gesture_name):
+
+    print(username, gesture_name)
+    # get patient
+    u = User.objects.get(username=username)
+    person = Person.objects.get(user=u)
+    pat = Patient.objects.get(person=person)
+    
+    # get gesture
+    gesture = Gesture.objects.get(patient=pat, name=gesture_name)
+
+    dic ={}
+
+    for game_played in GamePlayed.objects.all():
+        if game_played.gesture == gesture:
+            # if date is not in the dict
+            if game_played.date not in dic:
+                dic[str(game_played.date)] = {'correct': (game_played.repetitions - game_played.bad_gestures) , 'incorrect': game_played.bad_gestures}
+            else:
+                dic[str(game_played.date)]['correct'] += (game_played.repetitions - game_played.bad_gestures)
+                dic[str(game_played.date)]['incorrect'] += game_played.bad_gestures
+
+    ordered_dic = {}
+    for key in sorted(dic):
+        ordered_dic[key] = dic[key]
+
+    return ordered_dic
 
 def send_email_pw(email):
 

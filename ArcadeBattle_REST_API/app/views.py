@@ -400,7 +400,8 @@ def get_patient_highscores(request, username):
 
         data = queries.get_patient_highscores(username)
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
-    except:
+    except Exception as e:
+        print(e)
         return Response(status=HTTP_404_NOT_FOUND)
 
 
@@ -410,6 +411,28 @@ def get_patient_gesture_difficulties(request, username):
     try:
 
         data = queries.get_patient_gesture_difficulties(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_gestures_score(request, username):
+    try:
+
+        data = queries.get_patient_gestures_score(username)
+        return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
+    except:
+        return Response(status=HTTP_404_NOT_FOUND)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_patient_gesture_score_dates(request, username, gesture_name):
+    try:
+
+        data = queries.get_patient_gesture_score_dates(username, gesture_name)
         return Response({"user_type": get_user_type(None, request), "data": data}, status=HTTP_200_OK)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
