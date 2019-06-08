@@ -247,8 +247,6 @@ def patient_statistics(request):
     for g in patient_gestures:
         gestures_dict[str(g["id"])] = [g["name"], g["patient_difficulty"], g["default_difficulty"]]
 
-    print(gestures_dict)
-
 
 
     #-----------

@@ -16,6 +16,7 @@
         var gesturesChart = null;
         var topGamesChart = null;
         var gestureCorrectIncorrectChart = null;
+        var gestureEvolutionChart = null;
         window.onload = function(){
 
             var slider = document.getElementById("myRange").firstChild.nextSibling;
@@ -126,6 +127,7 @@
 
 
 
+
             //bar chart
             var ctx3 = document.getElementById("gesturesChart");
             if (ctx3) {
@@ -180,6 +182,8 @@
               });
             }
 
+
+
             getData();
 
         }
@@ -203,9 +207,6 @@
 
 
 
-
-
-
             Object.keys(gestureJSON).forEach(function(id) {
                 gesturesChart.data.labels.push(gestureJSON[id][0])
                 gesturesChart.data.datasets[0].data.push(gestureJSON[id][2])
@@ -223,7 +224,10 @@
             });
 
             gesturesChart.update();
+
         }
+
+
 
         Function.prototype.toJSON = function() {
           var parts = this
@@ -315,6 +319,7 @@
             var g_default_difficulty = $(button).attr("g_default_difficulty");
             var g_repetitions = $(button).attr("g_repetitions");
             var g_photo = $(button).attr("g_photo");
+            var g_evolution = $(button).attr("g_evolution");
 
             document.getElementById("gestureStatisticsName").value = g_name;
             document.getElementById("gestureStatisticsRepetitions").value = g_repetitions;
@@ -359,6 +364,94 @@
                 $("#gestureStatisticsUserDifficulty").addClass(" bg-warning");
             else
                 $("#gestureStatisticsUserDifficulty").addClass(" bg-danger");
+
+
+            // update evolution
+            document.getElementById("patient_evolution_dic").innerText = g_evolution;
+
+            gestureJSON = JSON.parse(document.getElementById("patient_evolution_dic").innerText.replaceAll('\'', '\"'));
+
+
+            if(gestureEvolutionChart)
+                gestureEvolutionChart.destroy();
+
+            //line chart
+            var ctx4 = document.getElementById("gestureEvolution").getContext("2d");
+            if (ctx4) {
+              ctx4.height = 150;
+              gestureEvolutionChart = new Chart(ctx4, {
+                type: 'line',
+                defaultFontFamily: 'Poppins',
+                data: {
+                  labels: [],
+                  datasets: [
+                    {
+                      label: "Correct Gestures",
+                      data: [],
+                      borderColor: "rgba(0, 128, 0, 0.9)",
+                      borderWidth: "1",
+                      backgroundColor: "rgba(0, 128, 0, 0.5)",
+                      fontFamily: "Poppins",
+                        fill:false
+                    },
+                    {
+                      label: "Inorrect Gestures",
+                      data: [],
+                      borderColor: "rgba(178,34,34,0.95)",
+                      borderWidth: "1",
+                      backgroundColor: "rgba(178,34,34,0.85)",
+                      fontFamily: "Poppins",
+                        fill:false
+                    },
+                    {
+                      label: "Correctness Percentage",
+                      data: [],
+                      borderColor: "rgba(30,144,255,0.95)",
+                      borderWidth: "3",
+                      backgroundColor: "rgba(30,144,255,0.85)",
+                      fontFamily: "Poppins",
+                        fill:false
+                    }
+                  ]
+                },
+                options: {
+                  legend: {
+                    position: 'top',
+                    labels: {
+                      fontFamily: 'Poppins'
+                    }
+
+                  },
+                  scales: {
+                    xAxes: [{
+                      ticks: {
+                        fontFamily: "Poppins"
+
+                      }
+                    }],
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: false,
+                        fontFamily: "Poppins"
+                      }
+                    }]
+                  }
+                }
+              });
+            }
+
+
+
+            Object.keys(gestureJSON).forEach(function(date)
+            {
+                gestureEvolutionChart.data.labels.push(date);
+                gestureEvolutionChart.data.datasets[0].data.push(gestureJSON[date]['correct']);
+                gestureEvolutionChart.data.datasets[1].data.push(gestureJSON[date]['incorrect']);
+                gestureEvolutionChart.data.datasets[2].data.push( Math.round((gestureJSON[date]['correct'] - gestureJSON[date]['incorrect']) / (gestureJSON[date]['correct'] + gestureJSON[date]['incorrect']) * 100 ));
+            });
+
+            gesturesChart.update();
+
 
         }
 
@@ -624,7 +717,7 @@
                                                             class="btn btn-sm btn-outline-primary video"
                                                             data-toggle="modal" data-target="#gestureStatisticsModal" g_name="{{ g.name }}"
                                                             g_default_difficulty="{{ g.default_difficulty }}" g_repetitions="{{ g.repetitions }}"
-                                                            g_patient_difficulty="{{ g.patient_difficulty }}" g_photo="{{ g.image }}"
+                                                            g_patient_difficulty="{{ g.patient_difficulty }}" g_photo="{{ g.image }}" g_evolution="{{ g.evolution }}"
                                                             onclick="updateGestureStatisticModal(this)" >
                                                             <i class="fas fa-search-plus"></i> Gesture Statistics
                                                         </button>
@@ -763,6 +856,13 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12" style="padding:30px; padding-top:0px; margin-top:20px">
+                    <h3>Patient Evolution</h3>
+                    <p id="patient_evolution_dic" style="display:none"></p>
+                    <canvas id="gestureEvolution" style="margin: 30px; margin-top:25px"></canvas>
+                </div>
+
             </div>
             <!--
             <div class="modal-footer">

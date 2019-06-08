@@ -444,6 +444,7 @@ def get_patient_gestures(username):
         dic["default_difficulty"] = g.default_difficulty
         dic["patient_difficulty"] = g.patient_difficulty
         dic["decision_tree"] = g.decision_tree
+        dic["evolution"] = get_patient_gesture_score_dates("null", g.name, p)
         gestures.append(dic)
 
     return gestures
@@ -684,13 +685,16 @@ def get_patient_gestures_score(username):
     return dic
 
 
-def get_patient_gesture_score_dates(username, gesture_name):
+def get_patient_gesture_score_dates(username, gesture_name, patient="null"):
 
-    print(username, gesture_name)
-    # get patient
-    u = User.objects.get(username=username)
-    person = Person.objects.get(user=u)
-    pat = Patient.objects.get(person=person)
+    if patient=="null":
+        # get patient
+        u = User.objects.get(username=username)
+        person = Person.objects.get(user=u)
+        pat = Patient.objects.get(person=person)
+
+    else:
+        pat = patient
     
     # get gesture
     gesture = Gesture.objects.get(patient=pat, name=gesture_name)
