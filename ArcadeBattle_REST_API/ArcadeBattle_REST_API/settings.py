@@ -33,7 +33,8 @@ ALLOWED_HOSTS = ['tmserver.ieeta.pt',
                  '192.168.63.236',
                  '192.168.44.204',
                  '192.168.55.198',
-                 '192.168.42.156']
+                 '192.168.42.156',
+                 'ec2-54-90-131-220.compute-1.amazonaws.com']
 
 
 # Application definition
