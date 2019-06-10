@@ -679,8 +679,8 @@ def get_patient_gestures_score(username):
         # search on every game played
         for game_played in GamePlayed.objects.all():
             if game_played.gesture == gest :
-                good += (game_played.repetitions - game_played.bad_gestures)
-                bad += game_played.bad_gestures
+                good = (game_played.repetitions - game_played.bad_gestures)
+                bad = game_played.bad_gestures
 
 
         dic[gest.name] = {'correct':good, 'incorrect':bad}
