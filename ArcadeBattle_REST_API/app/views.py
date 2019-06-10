@@ -112,7 +112,7 @@ def update_profile(request):
 
         if result:
             return Response({"user_type": get_user_type(None, request), "data": {}}, status=HTTP_200_OK)
-        return Response(status=HTTP_400_BAD_REQUEST)
+        return Response(status=HTTP_404_NOT_FOUND)
     except:
         return Response(status=HTTP_404_NOT_FOUND)
 

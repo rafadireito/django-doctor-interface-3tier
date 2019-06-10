@@ -210,7 +210,9 @@ def update_patient_notes(data):
 
 def update_profile(username, user_type, data):
     try:
-
+        print(username)
+        print(user_type)
+        print(data.get("password"))
         # get user
         u = User.objects.filter(username=username)
         p = Person.objects.filter(user=u[0])
@@ -238,8 +240,9 @@ def update_profile(username, user_type, data):
         # update password, if needed
         if 'password' in data:
             password = data.get("password")
-            u.set_password(password)
-            u.save()
+            curr_user = u[0]
+            curr_user.set_password(password)
+            curr_user.save()
 
         if 'photo_b64' in data:
             photo_b64 = data.get("photo_b64")
@@ -254,6 +257,7 @@ def update_profile(username, user_type, data):
                 d.update(city=data.get("city"))
             if "specialty" in data:
                 d.update(specialty=data.get("specialty"))
+
         return True
     except: return False
 
@@ -640,7 +644,6 @@ def get_patient_highscores(username):
 
     print(dic)
     return dic
-
 
 
 
