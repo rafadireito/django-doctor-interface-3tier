@@ -888,9 +888,9 @@ def reload_database(request):
                                   repetitions=23, bad_gestures=5)
         gp4 = GamePlayed.objects.create(gesture=gest1, game=g3, points=222, average_difficulty=76, date="2019-03-01",
                                   repetitions=20, bad_gestures=2)
-        gp5 = GamePlayed.objects.create(gesture=gest1, game=g4, points=112, average_difficulty=89, date="2004-01-01",
+        gp5 = GamePlayed.objects.create(gesture=gest1, game=g4, points=112, average_difficulty=89, date="2019-01-01",
                                   repetitions=20, bad_gestures=2)
-        gp6 = GamePlayed.objects.create(gesture=gest1, game=g3, points=112, average_difficulty=50, date="2004-01-04",
+        gp6 = GamePlayed.objects.create(gesture=gest1, game=g3, points=112, average_difficulty=50, date="2019-01-04",
                                   repetitions=20, bad_gestures=2)
         gp7 = GamePlayed.objects.create(gesture=gest1, game=g1, points=201, average_difficulty=80, date="2019-01-01",
                                   repetitions=20, bad_gestures=2)
@@ -900,7 +900,7 @@ def reload_database(request):
         gp9 = GamePlayed.objects.create(gesture=gest2, game=g4, points=243, average_difficulty=20, date="2019-01-01",
                                   repetitions=20, bad_gestures=2)
 
-        gp11 = GamePlayed.objects.create(gesture=gest2, game=g1, points=332, average_difficulty=22, date="2004-01-01",
+        gp11 = GamePlayed.objects.create(gesture=gest2, game=g1, points=332, average_difficulty=22, date="2019-01-01",
                                   repetitions=20, bad_gestures=2)
         gp12 = GamePlayed.objects.create(gesture=gest2, game=g3, points=234, average_difficulty=23, date="2019-01-01",
                                   repetitions=20, bad_gestures=2)
