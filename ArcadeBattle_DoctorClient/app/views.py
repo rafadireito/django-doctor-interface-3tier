@@ -264,8 +264,10 @@ def patient_statistics(request):
     # update dic with data from the api
     correct_incorrect_gestures_dict = {}
     for k in correct_incorrect_patient_gestures:
+        print(correct_incorrect_patient_gestures)
         value = correct_incorrect_patient_gestures[k]
         correct_incorrect_gestures_dict[k] = [k, value["correct"], value["incorrect"]]
+        print(correct_incorrect_gestures_dict)
     #-----------
 
 

@@ -90,7 +90,7 @@
                       fontFamily: "Poppins"
                     },
                     {
-                      label: "Inorrect Gestures",
+                      label: "Incorrect Gestures",
                       data: [],
                       borderColor: "rgba(178,34,34,0.95)",
                       borderWidth: "0",
@@ -221,9 +221,10 @@
                 gestureCorrectIncorrectChart.data.labels.push(correctIncorrectGestureJSON[id][0])
                 gestureCorrectIncorrectChart.data.datasets[0].data.push(correctIncorrectGestureJSON[id][1])
                 gestureCorrectIncorrectChart.data.datasets[1].data.push(correctIncorrectGestureJSON[id][2])
+
             });
 
-            gesturesChart.update();
+            gestureCorrectIncorrectChart.update();
 
         }
 
@@ -442,16 +443,16 @@
             }
 
 
-
             Object.keys(gestureJSON).forEach(function(date)
             {
                 gestureEvolutionChart.data.labels.push(date);
+
                 gestureEvolutionChart.data.datasets[0].data.push(gestureJSON[date]['correct']);
                 gestureEvolutionChart.data.datasets[1].data.push(gestureJSON[date]['incorrect']);
-                gestureEvolutionChart.data.datasets[2].data.push( Math.round((gestureJSON[date]['correct'] - gestureJSON[date]['incorrect']) / (gestureJSON[date]['correct'] + gestureJSON[date]['incorrect']) * 100 ));
+                gestureEvolutionChart.data.datasets[2].data.push( Math.round((gestureJSON[date]['correct']) / (gestureJSON[date]['correct'] + gestureJSON[date]['incorrect']) * 100 ));
             });
 
-            gesturesChart.update();
+            gestureEvolutionChart.update();
 
 
         }
