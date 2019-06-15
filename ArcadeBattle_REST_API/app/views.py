@@ -148,7 +148,7 @@ def login(request):
     try: data['photo_b64'] = Person.objects.get(user=User.objects.get(username=username)).photo_b64
     except: data['photo_b64'] = ""
 
-    return Response( data, status=HTTP_200_OK)
+    return Response(data, status=HTTP_200_OK)
 
 
 

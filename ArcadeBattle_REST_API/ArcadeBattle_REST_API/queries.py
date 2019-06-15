@@ -882,58 +882,53 @@ def reload_database(request):
         ################################
 
         # add to games played
-        gp1 = GamePlayed.objects.create(gesture=gest1, game=g1, points=222, average_difficulty=76, date="2019-01-01",
+        gp1 = GamePlayed.objects.create(gesture=gest1, game=g1, points=222, average_difficulty=76, date="2019-06-15",
                                   repetitions=20, bad_gestures=2)
-        gp3 = GamePlayed.objects.create(gesture=gest1, game=g1, points=33, average_difficulty=87, date="2019-01-04",
+        gp3 = GamePlayed.objects.create(gesture=gest1, game=g1, points=240, average_difficulty=87, date="2019-06-14",
                                   repetitions=23, bad_gestures=5)
-        gp4 = GamePlayed.objects.create(gesture=gest1, game=g3, points=222, average_difficulty=76, date="2019-03-01",
+        gp4 = GamePlayed.objects.create(gesture=gest1, game=g3, points=222, average_difficulty=76, date="2019-06-14",
                                   repetitions=20, bad_gestures=2)
-        gp5 = GamePlayed.objects.create(gesture=gest1, game=g4, points=112, average_difficulty=89, date="2019-01-01",
+        gp5 = GamePlayed.objects.create(gesture=gest1, game=g4, points=112, average_difficulty=89, date="2019-06-15",
                                   repetitions=20, bad_gestures=2)
-        gp6 = GamePlayed.objects.create(gesture=gest1, game=g3, points=112, average_difficulty=50, date="2019-01-04",
+        gp6 = GamePlayed.objects.create(gesture=gest1, game=g3, points=189, average_difficulty=70, date="2019-06-13",
                                   repetitions=20, bad_gestures=2)
-        gp7 = GamePlayed.objects.create(gesture=gest1, game=g1, points=201, average_difficulty=80, date="2019-01-01",
-                                  repetitions=20, bad_gestures=2)
+        gp7 = GamePlayed.objects.create(gesture=gest1, game=g1, points=201, average_difficulty=80, date="2019-06-15",
+                                  repetitions=20, bad_gestures=3)
 
 
 
-        gp9 = GamePlayed.objects.create(gesture=gest2, game=g4, points=243, average_difficulty=20, date="2019-01-01",
+        gp9 = GamePlayed.objects.create(gesture=gest2, game=g4, points=243, average_difficulty=30, date="2019-06-14",
+                                  repetitions=20, bad_gestures=2)
+        gp11 = GamePlayed.objects.create(gesture=gest2, game=g1, points=332, average_difficulty=22, date="2019-06-13",
+                                  repetitions=20, bad_gestures=2)
+        gp12 = GamePlayed.objects.create(gesture=gest2, game=g3, points=234, average_difficulty=23, date="2019-06-15",
+                                  repetitions=20, bad_gestures=2)
+        gp14 = GamePlayed.objects.create(gesture=gest2, game=g3, points=112, average_difficulty=50, date="2019-06-15",
+                                  repetitions=20, bad_gestures=2)
+        gp15 = GamePlayed.objects.create(gesture=gest2, game=g1, points=340, average_difficulty=42, date="2019-06-13",
+                                  repetitions=20, bad_gestures=2)
+        gp17 = GamePlayed.objects.create(gesture=gest2, game=g4, points=192, average_difficulty=76, date="2019-06-14",
+                                  repetitions=20, bad_gestures=2)
+        gp18 = GamePlayed.objects.create(gesture=gest2, game=g4, points=234, average_difficulty=82, date="2019-06-14",
                                   repetitions=20, bad_gestures=2)
 
-        gp11 = GamePlayed.objects.create(gesture=gest2, game=g1, points=332, average_difficulty=22, date="2019-01-01",
+
+        gp19 = GamePlayed.objects.create(gesture=gest3, game=g4, points=401, average_difficulty=88, date="2019-06-14",
                                   repetitions=20, bad_gestures=2)
-        gp12 = GamePlayed.objects.create(gesture=gest2, game=g3, points=234, average_difficulty=23, date="2019-01-01",
+        gp21 = GamePlayed.objects.create(gesture=gest3, game=g1, points=398, average_difficulty=79, date="2019-06-13",
+                                  repetitions=20, bad_gestures=2)
+        gp22 = GamePlayed.objects.create(gesture=gest3, game=g1, points=341, average_difficulty=81, date="2019-06-14",
+                                  repetitions=20, bad_gestures=2)
+        gp23 = GamePlayed.objects.create(gesture=gest3, game=g1, points=422, average_difficulty=94, date="2019-06-15",
+                                  repetitions=20, bad_gestures=2)
+        gp25 = GamePlayed.objects.create(gesture=gest3, game=g1, points=512, average_difficulty=98, date="2019-06-15",
+                                  repetitions=20, bad_gestures=2)
+        gp27 = GamePlayed.objects.create(gesture=gest3, game=g3, points=231, average_difficulty=90, date="2019-06-14",
+                                  repetitions=20, bad_gestures=2)
+        gp28 = GamePlayed.objects.create(gesture=gest3, game=g4, points=374, average_difficulty=89, date="2019-06-15",
                                   repetitions=20, bad_gestures=2)
 
-        gp14 = GamePlayed.objects.create(gesture=gest2, game=g3, points=112, average_difficulty=50, date="2019-01-03",
-                                  repetitions=20, bad_gestures=2)
-        gp15 = GamePlayed.objects.create(gesture=gest2, game=g1, points=12, average_difficulty=42, date="2019-01-01",
-                                  repetitions=20, bad_gestures=2)
-
-        gp17 = GamePlayed.objects.create(gesture=gest2, game=g4, points=122, average_difficulty=76, date="2019-01-01",
-                                  repetitions=20, bad_gestures=2)
-        gp18 = GamePlayed.objects.create(gesture=gest2, game=g4, points=234, average_difficulty=12, date="2019-03-01",
-                                  repetitions=20, bad_gestures=2)
-
-        gp19 = GamePlayed.objects.create(gesture=gest3, game=g4, points=401, average_difficulty=88, date="2019-01-03",
-                                  repetitions=20, bad_gestures=2)
-
-        gp21 = GamePlayed.objects.create(gesture=gest3, game=g1, points=398, average_difficulty=79, date="2019-01-01",
-                                  repetitions=20, bad_gestures=2)
-        gp22 = GamePlayed.objects.create(gesture=gest3, game=g1, points=341, average_difficulty=81, date="2019-04-01",
-                                  repetitions=20, bad_gestures=2)
-        gp23 = GamePlayed.objects.create(gesture=gest3, game=g1, points=452, average_difficulty=94, date="2019-03-01",
-                                  repetitions=20, bad_gestures=2)
-
-        gp25 = GamePlayed.objects.create(gesture=gest3, game=g1, points=512, average_difficulty=98, date="2019-04-01",
-                                  repetitions=20, bad_gestures=2)
-
-        gp27 = GamePlayed.objects.create(gesture=gest3, game=g3, points=231, average_difficulty=90, date="2019-01-01",
-                                  repetitions=20, bad_gestures=2)
-        gp28 = GamePlayed.objects.create(gesture=gest3, game=g4, points=234, average_difficulty=89, date="2019-04-01",
-                                  repetitions=20, bad_gestures=2)
-
-        gp29 = GamePlayed.objects.create(gesture=gest1, game=g5, points=234, average_difficulty=89, date="2019-04-01",
+        gp29 = GamePlayed.objects.create(gesture=gest1, game=g5, points=234, average_difficulty=89, date="2019-06-13",
                                          repetitions=20, bad_gestures=2)
 
 
